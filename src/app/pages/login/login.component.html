@@ -1,0 +1,17 @@
+<div class="auth-container">
+  <form class="auth-form" (ngSubmit)="onSubmit()">
+    <h2>Connexion</h2>
+    <div class="input-group">
+      <input type="email" [(ngModel)]="email" name="email" placeholder="Email" required />
+    </div>
+    <div class="input-group">
+      <input type="password" [(ngModel)]="password" name="password" placeholder="Mot de passe" required />
+    </div>
+    <button type="submit">Se connecter</button>
+    <div class="register-desc">
+    <span>Vous n'avez pas de compte ?</span>
+    <a href="/register">Créer un compte</a>
+  </div>
+  </form>
+  
+</div>

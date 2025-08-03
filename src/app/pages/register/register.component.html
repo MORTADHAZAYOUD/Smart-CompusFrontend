@@ -1,0 +1,454 @@
+<div class="register-container">
+  <h2>Inscription</h2>
+  
+  <!-- Loading indicator -->
+  <div *ngIf="isLoading" class="loading-message">
+    <p>⏳ Inscription en cours...</p>
+  </div>
+  
+  <form (ngSubmit)="onSubmit()" #registerForm="ngForm" [style.opacity]="isLoading ? '0.6' : '1'">
+    
+    <!-- Global Error Message -->
+    <div class="global-message-container" *ngIf="errorMessage || successMessage">
+      <div class="error-message" *ngIf="errorMessage">
+        ❌ {{ errorMessage }}
+      </div>
+      
+      <div class="success-message" *ngIf="successMessage">
+        ✅ {{ successMessage }}
+      </div>
+    </div>
+
+    <!-- Basic Information -->
+    <div class="form-section">
+      <h3>📝 Informations de base</h3>
+      
+      <div class="form-group">
+        <label for="firstname">Prénom *</label>
+        <input 
+          type="text" 
+          id="firstname" 
+          name="firstname" 
+          [(ngModel)]="firstname" 
+          required
+          maxlength="100"
+          [class.error-field]="hasFieldError('firstname')"
+          class="form-control"
+          placeholder="Votre prénom">
+        <div class="field-error" *ngIf="hasFieldError('firstname')">
+          {{ getFieldError('firstname') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastname">Nom *</label>
+        <input 
+          type="text" 
+          id="lastname" 
+          name="lastname" 
+          [(ngModel)]="lastname" 
+          required
+          maxlength="100"
+          [class.error-field]="hasFieldError('lastname')"
+          class="form-control"
+          placeholder="Votre nom de famille">
+        <div class="field-error" *ngIf="hasFieldError('lastname')">
+          {{ getFieldError('lastname') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          [(ngModel)]="email" 
+          required
+          [class.error-field]="hasFieldError('email')"
+          class="form-control"
+          placeholder="votre.email@exemple.com">
+        <div class="field-error" *ngIf="hasFieldError('email')">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe *</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          [(ngModel)]="password" 
+          required
+          [class.error-field]="hasFieldError('password')"
+          class="form-control"
+          placeholder="Minimum 6 caractères">
+        <div class="field-error" *ngIf="hasFieldError('password')">
+          {{ getFieldError('password') }}
+        </div>
+        <div class="field-help">
+          <small>Le mot de passe doit contenir au moins 6 caractères</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="userType">Type d'utilisateur *</label>
+        <select 
+          id="userType" 
+          name="userType" 
+          [(ngModel)]="userType" 
+          (change)="onUserTypeChange()"
+          required
+          [class.error-field]="hasFieldError('userType')"
+          class="form-control">
+          <option value="">🔽 Sélectionnez votre type</option>
+          <option value="student">🎓 Étudiant</option>
+          <option value="teacher">👨‍🏫 Enseignant</option>
+          <option value="parent">👨‍👩‍👧‍👦 Parent</option>
+        </select>
+        <div class="field-error" *ngIf="hasFieldError('userType')">
+          {{ getFieldError('userType') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Specific Fields -->
+    <div class="form-section" *ngIf="userType === 'student'">
+      <h3>🎓 Informations étudiant</h3>
+      
+      <div class="form-group">
+        <label for="birthDate">Date de naissance *</label>
+        <input 
+          type="date" 
+          id="birthDate" 
+          name="birthDate" 
+          [(ngModel)]="birthDate" 
+          required
+          [class.error-field]="hasFieldError('birthDate')"
+          class="form-control">
+        <div class="field-error" *ngIf="hasFieldError('birthDate')">
+          {{ getFieldError('birthDate') }}
+        </div>
+        <div class="field-help">
+          <small>Vous devez avoir entre 3 et 25 ans</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="className">Nom de la classe *</label>
+        <input 
+          type="text" 
+          id="className" 
+          name="className" 
+          [(ngModel)]="className" 
+          required
+          [class.error-field]="hasFieldError('className')"
+          placeholder="Ex: 3ème A, Terminale S, etc."
+          class="form-control">
+        <div class="field-error" *ngIf="hasFieldError('className')">
+          {{ getFieldError('className') }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Specific Fields -->
+    <div class="form-section" *ngIf="userType === 'teacher'">
+      <h3>👨‍🏫 Informations enseignant</h3>
+      
+      <div class="form-group">
+        <label for="specialite">Spécialité *</label>
+        <input 
+          type="text" 
+          id="specialite" 
+          name="specialite" 
+          [(ngModel)]="specialite" 
+          required
+          [class.error-field]="hasFieldError('specialite')"
+          placeholder="Ex: Mathématiques, Français, Sciences, etc."
+          class="form-control">
+        <div class="field-error" *ngIf="hasFieldError('specialite')">
+          {{ getFieldError('specialite') }}
+        </div>
+        <div class="field-help">
+          <small>Votre matière d'enseignement principale</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parent Specific Fields -->
+    <div class="form-section" *ngIf="userType === 'parent'">
+      <h3>👨‍👩‍👧‍👦 Informations parent</h3>
+      
+      <div class="form-group">
+        <label for="profession">Profession *</label>
+        <input 
+          type="text" 
+          id="profession" 
+          name="profession" 
+          [(ngModel)]="profession" 
+          required
+          [class.error-field]="hasFieldError('profession')"
+          placeholder="Ex: Médecin, Ingénieur, Commerçant, etc."
+          class="form-control">
+        <div class="field-error" *ngIf="hasFieldError('profession')">
+          {{ getFieldError('profession') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="childrenCount">Nombre d'enfants *</label>
+        <select 
+          id="childrenCount" 
+          name="childrenCount" 
+          [(ngModel)]="childrenCount" 
+          (change)="onChildrenCountChange()"
+          required
+          class="form-control">
+          <option value="1">1 enfant</option>
+          <option value="2">2 enfants</option>
+          <option value="3">3 enfants</option>
+          <option value="4">4 enfants</option>
+          <option value="5">5 enfants</option>
+        </select>
+      </div>
+
+      <div class="children-names">
+        <h4>👶 Noms des enfants</h4>
+        <div 
+          class="form-group" 
+          *ngFor="let childName of childrenNames; let i = index">
+          <label [for]="'childName' + i">Nom de l'enfant {{i + 1}} *</label>
+          <input 
+            type="text" 
+            [id]="'childName' + i"
+            [name]="'childName' + i"
+            [ngModel]="childName"
+            (ngModelChange)="updateChildName(i, $event)"
+            required
+            maxlength="100"
+            [class.error-field]="hasFieldError('childName' + i)"
+            placeholder="Nom complet de l'enfant"
+            class="form-control">
+          <div class="field-error" *ngIf="hasFieldError('childName' + i)">
+            {{ getFieldError('childName' + i) }}
+          </div>
+        </div>
+      </div>
+
+      <div class="info-note">
+        <p><strong>ℹ️ Note:</strong> Vos enfants doivent être déjà inscrits dans le système pour que vous puissiez les associer à votre compte parent.</p>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary"
+        (click)="resetForm()"
+        [disabled]="isLoading">
+        🔄 Réinitialiser
+      </button>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="isLoading">
+        <span *ngIf="!isLoading">✅ S'inscrire</span>
+        <span *ngIf="isLoading">⏳ Inscription...</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Form validation summary (for debugging/development) -->
+  <div class="validation-summary" *ngIf="hasAnyFieldErrors()" style="margin-top: 20px; padding: 10px; background: #f8f8f8; border-radius: 5px; display: none;">
+    <h4>Erreurs de validation détectées:</h4>
+    <ul>
+      <li *ngFor="let errorKey of getFieldErrorKeys()">
+        <strong>{{ errorKey }}:</strong> {{ fieldErrors[errorKey] }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+<style>
+/* Error styling */
+.error-field {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.field-error {
+  color: #dc3545;
+  font-size: 0.875em;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.field-help {
+  color: #6c757d;
+  font-size: 0.875em;
+  margin-top: 0.25rem;
+}
+
+.global-message-container {
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  background-color: #d1edff;
+  color: #0c5460;
+  padding: 0.75rem;
+  border: 1px solid #b8daff;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 1rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+.form-section h3 {
+  margin-bottom: 1rem;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #545b62;
+}
+
+.children-names {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #dee2e6;
+}
+
+.info-note {
+  background-color: #e7f3ff;
+  border: 1px solid #b8daff;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.info-note p {
+  margin: 0;
+  color: #0c5460;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #495057;
+}
+
+.register-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #495057;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .register-container {
+    padding: 1rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
+</style>
