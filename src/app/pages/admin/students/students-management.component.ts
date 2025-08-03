@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AdminService, Student } from '../../../services/admin.service';
 
 @Component({
   selector: 'app-students-management',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DatePipe],
   templateUrl: './students-management.component.html',
   styleUrls: ['./students-management.component.scss']
 })
