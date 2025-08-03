@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule, DatePipe } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AdminService } from '../../../services/admin.service';
 
 interface SystemSettings {
@@ -18,6 +19,8 @@ interface SystemSettings {
 
 @Component({
   selector: 'app-settings',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, DatePipe],
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
@@ -26,6 +29,7 @@ export class SettingsComponent implements OnInit {
   loading = false;
   saving = false;
   activeTab = 'general';
+  currentDate = new Date();
 
   tabs = [
     { id: 'general', label: 'Général', icon: '⚙️' },

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AdminService } from '../../../services/admin.service';
 
 interface ReportData {
@@ -18,6 +19,8 @@ interface ReportData {
 
 @Component({
   selector: 'app-reports',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss']
 })

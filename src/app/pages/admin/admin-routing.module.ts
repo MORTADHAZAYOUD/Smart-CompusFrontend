@@ -1,23 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminLayoutComponent } from './layout/admin-layout.component';
-import { AdminDashboardComponent } from './dashboard/admin-dashboard.component';
-import { StudentsManagementComponent } from './students/students-management.component';
-import { TeachersManagementComponent } from './teachers/teachers-management.component';
-import { ReportsComponent } from './reports/reports.component';
-import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: AdminLayoutComponent,
+    loadComponent: () => import('./layout/admin-layout.component').then(m => m.AdminLayoutComponent),
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'students', component: StudentsManagementComponent },
-      { path: 'teachers', component: TeachersManagementComponent },
-      { path: 'reports', component: ReportsComponent },
-      { path: 'settings', component: SettingsComponent }
+      { path: 'dashboard', loadComponent: () => import('./dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent) },
+      { path: 'students', loadComponent: () => import('./students/students-management.component').then(m => m.StudentsManagementComponent) },
+      { path: 'teachers', loadComponent: () => import('./teachers/teachers-management.component').then(m => m.TeachersManagementComponent) },
+      { path: 'reports', loadComponent: () => import('./reports/reports.component').then(m => m.ReportsComponent) },
+      { path: 'settings', loadComponent: () => import('./settings/settings.component').then(m => m.SettingsComponent) }
     ]
   }
 ];
