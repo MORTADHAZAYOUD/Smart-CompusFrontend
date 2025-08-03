@@ -1,0 +1,216 @@
+<div class="students-management">
+  <div class="page-header">
+    <h1>Gestion des étudiants</h1>
+    <button class="btn btn-primary" (click)="openModal()">
+      <span class="btn-icon">➕</span>
+      Ajouter un étudiant
+    </button>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Rechercher par nom, prénom ou email..." 
+        [(ngModel)]="searchTerm"
+        (input)="filterStudents()"
+        class="search-input">
+      <span class="search-icon">🔍</span>
+    </div>
+    
+    <div class="filter-group">
+      <label>Statut:</label>
+      <select [(ngModel)]="statusFilter" (change)="filterStudents()" class="filter-select">
+        <option value="all">Tous</option>
+        <option value="active">Actif</option>
+        <option value="suspended">Suspendu</option>
+        <option value="inactive">Inactif</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement des étudiants...</p>
+  </div>
+
+  <!-- Students Table -->
+  <div *ngIf="!loading" class="table-container">
+    <table class="students-table">
+      <thead>
+        <tr>
+          <th>Nom complet</th>
+          <th>Email</th>
+          <th>Classe</th>
+          <th>Téléphone</th>
+          <th>Statut</th>
+          <th>Date d'inscription</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of filteredStudents" class="student-row">
+          <td class="student-name">
+            <div class="name-container">
+              <strong>{{ student.firstname }} {{ student.lastname }}</strong>
+              <small>ID: {{ student.id }}</small>
+            </div>
+          </td>
+          <td>{{ student.email }}</td>
+          <td>{{ student.classe_name }}</td>
+          <td>{{ student.telephone || 'Non renseigné' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(student.status)">
+              {{ getStatusLabel(student.status) }}
+            </span>
+          </td>
+          <td>{{ student.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button class="btn-action btn-edit" (click)="openModal(student)" title="Modifier">
+                ✏️
+              </button>
+              <button 
+                *ngIf="student.status === 'active'" 
+                class="btn-action btn-suspend" 
+                (click)="suspendStudent(student)" 
+                title="Suspendre">
+                ⏸️
+              </button>
+              <button 
+                *ngIf="student.status === 'suspended'" 
+                class="btn-action btn-activate" 
+                (click)="activateStudent(student)" 
+                title="Activer">
+                ▶️
+              </button>
+              <button class="btn-action btn-delete" (click)="deleteStudent(student)" title="Supprimer">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- No Results -->
+    <div *ngIf="filteredStudents.length === 0" class="no-results">
+      <p>Aucun étudiant trouvé.</p>
+    </div>
+  </div>
+
+  <!-- Modal for Add/Edit Student -->
+  <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editMode ? 'Modifier l\'étudiant' : 'Ajouter un étudiant' }}</h2>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      
+      <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="student-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstname">Prénom *</label>
+            <input 
+              type="text" 
+              id="firstname" 
+              formControlName="firstname" 
+              class="form-input"
+              [class.error]="studentForm.get('firstname')?.invalid && studentForm.get('firstname')?.touched">
+            <div *ngIf="studentForm.get('firstname')?.invalid && studentForm.get('firstname')?.touched" class="error-message">
+              Le prénom est requis (minimum 2 caractères)
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lastname">Nom *</label>
+            <input 
+              type="text" 
+              id="lastname" 
+              formControlName="lastname" 
+              class="form-input"
+              [class.error]="studentForm.get('lastname')?.invalid && studentForm.get('lastname')?.touched">
+            <div *ngIf="studentForm.get('lastname')?.invalid && studentForm.get('lastname')?.touched" class="error-message">
+              Le nom est requis (minimum 2 caractères)
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            class="form-input"
+            [class.error]="studentForm.get('email')?.invalid && studentForm.get('email')?.touched">
+          <div *ngIf="studentForm.get('email')?.invalid && studentForm.get('email')?.touched" class="error-message">
+            Veuillez saisir un email valide
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateNaissance">Date de naissance *</label>
+            <input 
+              type="date" 
+              id="dateNaissance" 
+              formControlName="dateNaissance" 
+              class="form-input"
+              [class.error]="studentForm.get('dateNaissance')?.invalid && studentForm.get('dateNaissance')?.touched">
+            <div *ngIf="studentForm.get('dateNaissance')?.invalid && studentForm.get('dateNaissance')?.touched" class="error-message">
+              La date de naissance est requise
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="classe_id">Classe *</label>
+            <select 
+              id="classe_id" 
+              formControlName="classe_id" 
+              class="form-input"
+              [class.error]="studentForm.get('classe_id')?.invalid && studentForm.get('classe_id')?.touched">
+              <option value="">Sélectionner une classe</option>
+              <option *ngFor="let classe of classes" [value]="classe.id">{{ classe.name }}</option>
+            </select>
+            <div *ngIf="studentForm.get('classe_id')?.invalid && studentForm.get('classe_id')?.touched" class="error-message">
+              Veuillez sélectionner une classe
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input 
+              type="tel" 
+              id="telephone" 
+              formControlName="telephone" 
+              class="form-input"
+              placeholder="0123456789">
+          </div>
+          
+          <div class="form-group">
+            <label for="status">Statut *</label>
+            <select id="status" formControlName="status" class="form-input">
+              <option value="active">Actif</option>
+              <option value="suspended">Suspendu</option>
+              <option value="inactive">Inactif</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!studentForm.valid">
+            {{ editMode ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
