@@ -1,0 +1,230 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h1>Paramètres du système</h1>
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="exportSettings()">
+        <span class="btn-icon">📤</span>
+        Exporter
+      </button>
+      <label class="btn btn-secondary import-btn">
+        <span class="btn-icon">📥</span>
+        Importer
+        <input type="file" accept=".json" (change)="importSettings($event)" style="display: none;">
+      </label>
+      <button class="btn btn-warning" (click)="resetSettings()">
+        <span class="btn-icon">🔄</span>
+        Réinitialiser
+      </button>
+    </div>
+  </div>
+
+  <!-- Settings Navigation -->
+  <div class="settings-nav">
+    <button 
+      *ngFor="let tab of tabs" 
+      class="nav-tab"
+      [class.active]="activeTab === tab.id"
+      (click)="selectTab(tab.id)">
+      <span class="tab-icon">{{ tab.icon }}</span>
+      <span class="tab-label">{{ tab.label }}</span>
+    </button>
+  </div>
+
+  <!-- Settings Form -->
+  <div class="settings-content">
+    <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+      
+      <!-- General Settings -->
+      <div *ngIf="activeTab === 'general'" class="settings-section">
+        <h2>Paramètres généraux</h2>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="schoolName">Nom de l'établissement *</label>
+            <input 
+              type="text" 
+              id="schoolName" 
+              formControlName="schoolName" 
+              class="form-input"
+              placeholder="SmartCompus">
+          </div>
+          
+          <div class="form-group">
+            <label for="academicYear">Année académique *</label>
+            <input 
+              type="text" 
+              id="academicYear" 
+              formControlName="academicYear" 
+              class="form-input"
+              placeholder="2023-2024">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="schoolAddress">Adresse *</label>
+          <textarea 
+            id="schoolAddress" 
+            formControlName="schoolAddress" 
+            class="form-input"
+            rows="3"
+            placeholder="123 Rue de l'Université, 75001 Paris"></textarea>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="schoolPhone">Téléphone *</label>
+            <input 
+              type="tel" 
+              id="schoolPhone" 
+              formControlName="schoolPhone" 
+              class="form-input"
+              placeholder="01 23 45 67 89">
+          </div>
+          
+          <div class="form-group">
+            <label for="schoolEmail">Email *</label>
+            <input 
+              type="email" 
+              id="schoolEmail" 
+              formControlName="schoolEmail" 
+              class="form-input"
+              placeholder="contact@smartcompus.fr">
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic Settings -->
+      <div *ngIf="activeTab === 'academic'" class="settings-section">
+        <h2>Paramètres académiques</h2>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="maxStudentsPerClass">Nombre max d'étudiants par classe *</label>
+            <input 
+              type="number" 
+              id="maxStudentsPerClass" 
+              formControlName="maxStudentsPerClass" 
+              class="form-input"
+              min="1" 
+              max="100">
+            <small class="form-help">Entre 1 et 100 étudiants</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="attendanceThreshold">Seuil de présence requis (%) *</label>
+            <input 
+              type="number" 
+              id="attendanceThreshold" 
+              formControlName="attendanceThreshold" 
+              class="form-input"
+              min="0" 
+              max="100">
+            <small class="form-help">Pourcentage minimum de présence requis</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="gradeScale">Échelle de notation *</label>
+          <select id="gradeScale" formControlName="gradeScale" class="form-input">
+            <option value="20">Sur 20</option>
+            <option value="100">Sur 100</option>
+            <option value="letter">Lettres (A, B, C, D, F)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Notifications Settings -->
+      <div *ngIf="activeTab === 'notifications'" class="settings-section">
+        <h2>Paramètres de notifications</h2>
+        
+        <div class="notification-settings">
+          <div class="notification-item">
+            <div class="notification-info">
+              <h3>Notifications par email</h3>
+              <p>Envoyer des emails pour les événements importants</p>
+            </div>
+            <div class="notification-controls">
+              <label class="toggle-switch">
+                <input type="checkbox" formControlName="emailNotifications">
+                <span class="toggle-slider"></span>
+              </label>
+              <button 
+                type="button" 
+                class="btn btn-sm btn-outline" 
+                (click)="testEmailNotification()"
+                [disabled]="!settingsForm.get('emailNotifications')?.value">
+                Tester
+              </button>
+            </div>
+          </div>
+
+          <div class="notification-item">
+            <div class="notification-info">
+              <h3>Notifications par SMS</h3>
+              <p>Envoyer des SMS pour les urgences</p>
+            </div>
+            <div class="notification-controls">
+              <label class="toggle-switch">
+                <input type="checkbox" formControlName="smsNotifications">
+                <span class="toggle-slider"></span>
+              </label>
+              <button 
+                type="button" 
+                class="btn btn-sm btn-outline" 
+                (click)="testSMSNotification()"
+                [disabled]="!settingsForm.get('smsNotifications')?.value">
+                Tester
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- System Settings -->
+      <div *ngIf="activeTab === 'system'" class="settings-section">
+        <h2>Paramètres système</h2>
+        
+        <div class="system-settings">
+          <div class="system-item">
+            <div class="system-info">
+              <h3>Mode maintenance</h3>
+              <p>Activer le mode maintenance pour les mises à jour</p>
+            </div>
+            <div class="system-controls">
+              <label class="toggle-switch">
+                <input type="checkbox" formControlName="maintenanceMode">
+                <span class="toggle-slider maintenance"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="system-info-cards">
+            <div class="info-card">
+              <h4>Version du système</h4>
+              <p>v1.0.0</p>
+            </div>
+            
+            <div class="info-card">
+              <h4>Dernière sauvegarde</h4>
+              <p>{{ new Date() | date:'dd/MM/yyyy à HH:mm' }}</p>
+            </div>
+            
+            <div class="info-card">
+              <h4>Espace disque utilisé</h4>
+              <p>2.3 GB / 10 GB</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="!settingsForm.valid || saving">
+          <span *ngIf="saving" class="btn-icon">⏳</span>
+          <span *ngIf="!saving" class="btn-icon">💾</span>
+          {{ saving ? 'Sauvegarde...' : 'Sauvegarder' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

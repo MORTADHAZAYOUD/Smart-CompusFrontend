@@ -1,0 +1,112 @@
+// Import the base styles from students management and add teacher-specific styles
+@import '../students/students-management.component.scss';
+
+.teachers-management {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.teachers-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  thead {
+    background: #f8fafc;
+    
+    th {
+      padding: 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #e1e5e9;
+    }
+  }
+  
+  tbody {
+    tr {
+      transition: background-color 0.3s ease;
+      
+      &:hover {
+        background: #f8fafc;
+      }
+      
+      &:not(:last-child) {
+        border-bottom: 1px solid #e1e5e9;
+      }
+    }
+    
+    td {
+      padding: 16px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.teacher-name {
+  .name-container {
+    strong {
+      display: block;
+      color: #333;
+      font-size: 1rem;
+    }
+    
+    small {
+      color: #666;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.speciality-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.teacher-form {
+  padding: 30px;
+}
+
+// Responsive adjustments for teachers table
+@media (max-width: 480px) {
+  .teachers-table {
+    thead {
+      display: none;
+    }
+    
+    tbody {
+      tr {
+        display: block;
+        border: 1px solid #e1e5e9;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        padding: 15px;
+        
+        td {
+          display: block;
+          padding: 5px 0;
+          border: none;
+          
+          &:before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #333;
+            margin-right: 10px;
+          }
+          
+          &:nth-child(1):before { content: "Nom: "; }
+          &:nth-child(2):before { content: "Email: "; }
+          &:nth-child(3):before { content: "Spécialité: "; }
+          &:nth-child(4):before { content: "Téléphone: "; }
+          &:nth-child(5):before { content: "Statut: "; }
+          &:nth-child(6):before { content: "Date: "; }
+          &:nth-child(7):before { content: "Actions: "; }
+        }
+      }
+    }
+  }
+}
