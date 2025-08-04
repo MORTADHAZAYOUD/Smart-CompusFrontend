@@ -1,0 +1,186 @@
+<div class="teachers-management">
+  <div class="page-header">
+    <h1>Gestion des enseignants</h1>
+    <button class="btn btn-primary" (click)="openModal()">
+      <span class="btn-icon">➕</span>
+      Ajouter un enseignant
+    </button>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="Rechercher par nom, prénom, email ou spécialité..." 
+        [(ngModel)]="searchTerm"
+        (input)="filterTeachers()"
+        class="search-input">
+      <span class="search-icon">🔍</span>
+    </div>
+    
+    <div class="filter-group">
+      <label>Statut:</label>
+      <select [(ngModel)]="statusFilter" (change)="filterTeachers()" class="filter-select">
+        <option value="all">Tous</option>
+        <option value="active">Actif</option>
+        <option value="inactive">Inactif</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement des enseignants...</p>
+  </div>
+
+  <!-- Teachers Table -->
+  <div *ngIf="!loading" class="table-container">
+    <table class="teachers-table">
+      <thead>
+        <tr>
+          <th>Nom complet</th>
+          <th>Email</th>
+          <th>Spécialité</th>
+          <th>Téléphone</th>
+          <th>Statut</th>
+          <th>Date d'embauche</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let teacher of filteredTeachers" class="teacher-row">
+          <td class="teacher-name">
+            <div class="name-container">
+              <strong>{{ teacher.firstname }} {{ teacher.lastname }}</strong>
+              <small>ID: {{ teacher.id }}</small>
+            </div>
+          </td>
+          <td>{{ teacher.email }}</td>
+          <td>
+            <span class="speciality-badge">{{ teacher.specialite }}</span>
+          </td>
+          <td>{{ teacher.telephone || 'Non renseigné' }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="getStatusClass(teacher.status)">
+              {{ getStatusLabel(teacher.status) }}
+            </span>
+          </td>
+          <td>{{ teacher.createdAt | date:'dd/MM/yyyy' }}</td>
+          <td class="actions-cell">
+            <div class="action-buttons">
+              <button class="btn-action btn-edit" (click)="openModal(teacher)" title="Modifier">
+                ✏️
+              </button>
+              <button class="btn-action btn-delete" (click)="deleteTeacher(teacher)" title="Supprimer">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- No Results -->
+    <div *ngIf="filteredTeachers.length === 0" class="no-results">
+      <p>Aucun enseignant trouvé.</p>
+    </div>
+  </div>
+
+  <!-- Modal for Add/Edit Teacher -->
+  <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ editMode ? 'Modifier l\'enseignant' : 'Ajouter un enseignant' }}</h2>
+        <button class="modal-close" (click)="closeModal()">✕</button>
+      </div>
+      
+      <form [formGroup]="teacherForm" (ngSubmit)="onSubmit()" class="teacher-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstname">Prénom *</label>
+            <input 
+              type="text" 
+              id="firstname" 
+              formControlName="firstname" 
+              class="form-input"
+              [class.error]="teacherForm.get('firstname')?.invalid && teacherForm.get('firstname')?.touched">
+            <div *ngIf="teacherForm.get('firstname')?.invalid && teacherForm.get('firstname')?.touched" class="error-message">
+              Le prénom est requis (minimum 2 caractères)
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="lastname">Nom *</label>
+            <input 
+              type="text" 
+              id="lastname" 
+              formControlName="lastname" 
+              class="form-input"
+              [class.error]="teacherForm.get('lastname')?.invalid && teacherForm.get('lastname')?.touched">
+            <div *ngIf="teacherForm.get('lastname')?.invalid && teacherForm.get('lastname')?.touched" class="error-message">
+              Le nom est requis (minimum 2 caractères)
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            class="form-input"
+            [class.error]="teacherForm.get('email')?.invalid && teacherForm.get('email')?.touched">
+          <div *ngIf="teacherForm.get('email')?.invalid && teacherForm.get('email')?.touched" class="error-message">
+            Veuillez saisir un email valide
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="specialite">Spécialité *</label>
+            <input 
+              type="text" 
+              id="specialite" 
+              formControlName="specialite" 
+              class="form-input"
+              placeholder="Ex: Mathématiques, Informatique, Physique..."
+              [class.error]="teacherForm.get('specialite')?.invalid && teacherForm.get('specialite')?.touched">
+            <div *ngIf="teacherForm.get('specialite')?.invalid && teacherForm.get('specialite')?.touched" class="error-message">
+              La spécialité est requise
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="telephone">Téléphone</label>
+            <input 
+              type="tel" 
+              id="telephone" 
+              formControlName="telephone" 
+              class="form-input"
+              placeholder="0123456789">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Statut *</label>
+          <select id="status" formControlName="status" class="form-input">
+            <option value="active">Actif</option>
+            <option value="inactive">Inactif</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!teacherForm.valid">
+            {{ editMode ? 'Mettre à jour' : 'Créer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

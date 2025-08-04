@@ -1,0 +1,203 @@
+<div class="reports-container">
+  <div class="reports-header">
+    <h1>Rapports et Analyses</h1>
+    <button class="btn btn-primary" (click)="exportReport()">
+      <span class="btn-icon">📄</span>
+      Exporter
+    </button>
+  </div>
+
+  <!-- Report Navigation -->
+  <div class="report-nav">
+    <button 
+      *ngFor="let report of reportTypes" 
+      class="nav-button"
+      [class.active]="selectedReport === report.id"
+      (click)="selectReport(report.id)">
+      <span class="nav-icon">{{ report.icon }}</span>
+      <span class="nav-label">{{ report.label }}</span>
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement des rapports...</p>
+  </div>
+
+  <!-- Reports Content -->
+  <div *ngIf="!loading" class="reports-content">
+    
+    <!-- Overview Report -->
+    <div *ngIf="selectedReport === 'overview'" class="report-section">
+      <h2>Vue d'ensemble</h2>
+      
+      <!-- Overview Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👨‍🎓</div>
+          <div class="stat-content">
+            <h3>{{ overviewStats.totalStudents }}</h3>
+            <p>Étudiants inscrits</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">👨‍🏫</div>
+          <div class="stat-content">
+            <h3>{{ overviewStats.totalTeachers }}</h3>
+            <p>Enseignants</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <h3>{{ overviewStats.averageAttendance }}%</h3>
+            <p>Présence moyenne</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">🏫</div>
+          <div class="stat-content">
+            <h3>{{ overviewStats.activeClasses }}</h3>
+            <p>Classes actives</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Registrations -->
+      <div class="data-section">
+        <h3>Inscriptions récentes</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Classe</th>
+                <th>Date</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let registration of recentRegistrations">
+                <td>{{ registration.name }}</td>
+                <td>{{ registration.class }}</td>
+                <td>{{ formatDate(registration.date) }}</td>
+                <td>
+                  <span class="status-badge" [ngClass]="getStatusClass(registration.status)">
+                    {{ getStatusLabel(registration.status) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Report -->
+    <div *ngIf="selectedReport === 'attendance'" class="report-section">
+      <h2>Rapport de présences</h2>
+      
+      <div class="chart-container">
+        <h3>Taux de présence par jour</h3>
+        <div class="simple-chart">
+          <div class="chart-bars">
+            <div 
+              *ngFor="let rate of reportData.attendanceRates.data; let i = index" 
+              class="chart-bar"
+              [style.height.%]="rate">
+              <span class="bar-value">{{ rate }}%</span>
+            </div>
+          </div>
+          <div class="chart-labels">
+            <span *ngFor="let label of reportData.attendanceRates.labels">{{ label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-section">
+        <h3>Classes les plus performantes</h3>
+        <div class="performance-list">
+          <div *ngFor="let class of topPerformingClasses; let i = index" class="performance-item">
+            <div class="rank">{{ i + 1 }}</div>
+            <div class="class-info">
+              <strong>{{ class.name }}</strong>
+              <small>{{ class.students }} étudiants</small>
+            </div>
+            <div class="average">{{ class.average }}/20</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Registrations Report -->
+    <div *ngIf="selectedReport === 'registrations'" class="report-section">
+      <h2>Rapport d'inscriptions</h2>
+      
+      <div class="chart-container">
+        <h3>Inscriptions par mois</h3>
+        <div class="simple-chart">
+          <div class="chart-bars">
+            <div 
+              *ngFor="let count of reportData.studentRegistrations.data; let i = index" 
+              class="chart-bar registration-bar"
+              [style.height.%]="(count / 30) * 100">
+              <span class="bar-value">{{ count }}</span>
+            </div>
+          </div>
+          <div class="chart-labels">
+            <span *ngFor="let label of reportData.studentRegistrations.labels">{{ label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Report -->
+    <div *ngIf="selectedReport === 'performance'" class="report-section">
+      <h2>Rapport de performances</h2>
+      
+      <div class="chart-container">
+        <h3>Répartition par classe</h3>
+        <div class="simple-chart">
+          <div class="chart-bars">
+            <div 
+              *ngFor="let count of reportData.classDistribution.data; let i = index" 
+              class="chart-bar performance-bar"
+              [style.height.%]="(count / 60) * 100">
+              <span class="bar-value">{{ count }}</span>
+            </div>
+          </div>
+          <div class="chart-labels">
+            <span *ngFor="let label of reportData.classDistribution.labels">{{ label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="data-section">
+        <h3>Analyse des performances</h3>
+        <div class="analysis-grid">
+          <div class="analysis-card">
+            <h4>Taux de réussite global</h4>
+            <div class="metric">87.3%</div>
+            <p class="metric-desc">En augmentation de 2.1% par rapport au semestre précédent</p>
+          </div>
+          
+          <div class="analysis-card">
+            <h4>Moyenne générale</h4>
+            <div class="metric">15.2/20</div>
+            <p class="metric-desc">Stable par rapport au semestre précédent</p>
+          </div>
+          
+          <div class="analysis-card">
+            <h4>Taux d'abandon</h4>
+            <div class="metric">3.8%</div>
+            <p class="metric-desc">En baisse de 1.2% par rapport au semestre précédent</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
