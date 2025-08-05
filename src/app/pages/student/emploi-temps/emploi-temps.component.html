@@ -1,1 +1,146 @@
-<p>emploi-temps works!</p>
+<!-- Schedule Component -->
+<div class="schedule-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Emploi du Temps</h1>
+      <p>Consultez votre planning de cours et événements</p>
+    </div>
+    <div class="week-navigation">
+      <button class="nav-btn" (click)="previousWeek()">&lt;</button>
+      <span class="current-week">{{ currentWeekLabel }}</span>
+      <button class="nav-btn" (click)="nextWeek()">&gt;</button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement de votre emploi du temps...</p>
+  </div>
+
+  <!-- Schedule Content -->
+  <div *ngIf="!isLoading" class="schedule-content">
+    <!-- Quick Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+          <h3>{{ totalHoursThisWeek }}</h3>
+          <p>Heures cette semaine</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👨‍🏫</div>
+        <div class="stat-info">
+          <h3>{{ uniqueSubjects.length }}</h3>
+          <p>Matières</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3>{{ totalSessionsThisWeek }}</h3>
+          <p>Séances</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Schedule Grid -->
+    <div class="schedule-grid">
+      <!-- Time Column -->
+      <div class="time-column">
+        <div class="time-header">Heure</div>
+        <div *ngFor="let hour of timeSlots" class="time-slot">
+          {{ hour }}
+        </div>
+      </div>
+
+      <!-- Days Columns -->
+      <div *ngFor="let day of weekDays" class="day-column">
+        <div class="day-header">
+          <span class="day-name">{{ day.name }}</span>
+          <span class="day-date">{{ day.date }}</span>
+        </div>
+        
+        <!-- Sessions for this day -->
+        <div class="day-sessions">
+          <div *ngFor="let session of getSessionsForDay(day.date)" 
+               class="session-block"
+               [style.top.px]="getSessionTopPosition(session.heureDebut)"
+               [style.height.px]="getSessionHeight(session.heureDebut, session.heureFin)"
+               [class]="getSessionTypeClass(session.type)">
+            <div class="session-content">
+              <div class="session-title">{{ session.matiere }}</div>
+              <div class="session-time">{{ session.heureDebut }} - {{ session.heureFin }}</div>
+              <div class="session-teacher">{{ session.enseignant }}</div>
+              <div class="session-location">{{ session.salle }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily View (Mobile) -->
+    <div class="daily-view">
+      <div class="day-selector">
+        <button *ngFor="let day of weekDays" 
+                class="day-btn"
+                [class.active]="selectedDay === day.date"
+                (click)="selectDay(day.date)">
+          <span class="day-name">{{ day.name.substring(0, 3) }}</span>
+          <span class="day-date">{{ day.date }}</span>
+        </button>
+      </div>
+
+      <div class="selected-day-sessions">
+        <h3>{{ getSelectedDayName() }}</h3>
+        <div *ngIf="getSessionsForDay(selectedDay).length === 0" class="no-sessions">
+          <div class="empty-icon">📅</div>
+          <p>Aucune séance prévue ce jour</p>
+        </div>
+        <div *ngFor="let session of getSessionsForDay(selectedDay)" class="session-card">
+          <div class="session-time-badge" [class]="getSessionTypeClass(session.type)">
+            {{ session.heureDebut }}
+          </div>
+          <div class="session-details">
+            <h4>{{ session.matiere }}</h4>
+            <p class="session-teacher">{{ session.enseignant }}</p>
+            <p class="session-info">
+              <span class="session-duration">{{ session.heureDebut }} - {{ session.heureFin }}</span>
+              <span class="session-location">{{ session.salle }}</span>
+            </p>
+            <span class="session-type-label" [class]="getSessionTypeClass(session.type)">
+              {{ session.type }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Sessions -->
+    <div class="upcoming-sessions">
+      <h3>Prochaines Séances</h3>
+      <div class="sessions-list">
+        <div *ngIf="upcomingSessions.length === 0" class="empty-state">
+          <div class="empty-icon">📚</div>
+          <p>Aucune séance programmée prochainement</p>
+        </div>
+        <div *ngFor="let session of upcomingSessions" class="upcoming-session">
+          <div class="session-date">
+            <span class="date-day">{{ formatDate(session.date, 'day') }}</span>
+            <span class="date-month">{{ formatDate(session.date, 'month') }}</span>
+          </div>
+          <div class="session-info">
+            <h4>{{ session.matiere }}</h4>
+            <p>{{ session.enseignant }} • {{ session.salle }}</p>
+            <span class="session-time">{{ session.heureDebut }} - {{ session.heureFin }}</span>
+          </div>
+          <div class="session-type-badge" [class]="getSessionTypeClass(session.type)">
+            {{ session.type }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

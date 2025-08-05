@@ -1,0 +1,118 @@
+<!-- Student Layout Component -->
+<div class="student-layout">
+  <!-- Header -->
+  <header class="layout-header">
+    <div class="header-content">
+      <!-- Logo/Brand -->
+      <div class="brand">
+        <h2>SmartCampus</h2>
+        <span class="role-badge">Étudiant</span>
+      </div>
+
+      <!-- Navigation Menu (Desktop) -->
+      <nav class="desktop-nav">
+        <a routerLink="/student/dashboard" routerLinkActive="active" class="nav-link">
+          <span class="icon">🏠</span>
+          <span>Tableau de bord</span>
+        </a>
+        <a routerLink="/student/my-notes" routerLinkActive="active" class="nav-link">
+          <span class="icon">📊</span>
+          <span>Mes Notes</span>
+        </a>
+        <a routerLink="/student/emploi-temps" routerLinkActive="active" class="nav-link">
+          <span class="icon">📅</span>
+          <span>Planning</span>
+        </a>
+        <a routerLink="/student/my-seances" routerLinkActive="active" class="nav-link">
+          <span class="icon">📚</span>
+          <span>Séances</span>
+        </a>
+        <a routerLink="/student/messages" routerLinkActive="active" class="nav-link">
+          <span class="icon">💬</span>
+          <span>Messages</span>
+          <span *ngIf="unreadMessages > 0" class="badge">{{ unreadMessages }}</span>
+        </a>
+        <a routerLink="/student/notifications" routerLinkActive="active" class="nav-link">
+          <span class="icon">🔔</span>
+          <span>Notifications</span>
+          <span *ngIf="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
+        </a>
+      </nav>
+
+      <!-- User Profile & Actions -->
+      <div class="user-section">
+        <div class="user-info" (click)="navigateTo('profil')">
+          <div class="avatar">
+            <span>{{ student.prenom?.[0] }}{{ student.nom?.[0] }}</span>
+          </div>
+          <div class="user-details">
+            <span class="name">{{ student.prenom }} {{ student.nom }}</span>
+            <span class="class">{{ student.classe }}</span>
+          </div>
+        </div>
+        
+        <div class="header-actions">
+          <button class="notification-btn" (click)="navigateTo('notifications')">
+            <span class="icon">🔔</span>
+            <span *ngIf="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
+          </button>
+          <button class="logout-btn" (click)="logout()">
+            <span class="icon">🚪</span>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="mobile-menu-toggle" (click)="toggleMenu()">
+          <span class="hamburger"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav" [class.open]="isMenuOpen">
+    <div class="mobile-nav-content">
+      <a routerLink="/student/dashboard" routerLinkActive="active" (click)="navigateTo('dashboard')" class="mobile-nav-link">
+        <span class="icon">🏠</span>
+        <span>Tableau de bord</span>
+      </a>
+      <a routerLink="/student/my-notes" routerLinkActive="active" (click)="navigateTo('my-notes')" class="mobile-nav-link">
+        <span class="icon">📊</span>
+        <span>Mes Notes</span>
+      </a>
+      <a routerLink="/student/emploi-temps" routerLinkActive="active" (click)="navigateTo('emploi-temps')" class="mobile-nav-link">
+        <span class="icon">📅</span>
+        <span>Planning</span>
+      </a>
+      <a routerLink="/student/my-seances" routerLinkActive="active" (click)="navigateTo('my-seances')" class="mobile-nav-link">
+        <span class="icon">📚</span>
+        <span>Séances</span>
+      </a>
+      <a routerLink="/student/messages" routerLinkActive="active" (click)="navigateTo('messages')" class="mobile-nav-link">
+        <span class="icon">💬</span>
+        <span>Messages</span>
+        <span *ngIf="unreadMessages > 0" class="badge">{{ unreadMessages }}</span>
+      </a>
+      <a routerLink="/student/notifications" routerLinkActive="active" (click)="navigateTo('notifications')" class="mobile-nav-link">
+        <span class="icon">🔔</span>
+        <span>Notifications</span>
+        <span *ngIf="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
+      </a>
+      <a routerLink="/student/profil" routerLinkActive="active" (click)="navigateTo('profil')" class="mobile-nav-link">
+        <span class="icon">👤</span>
+        <span>Mon Profil</span>
+      </a>
+      <button class="mobile-logout" (click)="logout()">
+        <span class="icon">🚪</span>
+        <span>Déconnexion</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="layout-main">
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

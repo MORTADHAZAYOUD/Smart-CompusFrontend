@@ -1,24 +1,21 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './pages/student/dashboard/dashboard.component';
-import { ProfilComponent } from './pages/student/profil/profil.component';
-import { MyPresencesComponent } from './pages/student/my-presences/my-presences.component';
-// ... autres imports ...
+import { routes } from './app.routes';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ProfilComponent,
-    DashboardComponent,
-    MyPresencesComponent
-    // ... autres composants ...
+    AppComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    // ... autres modules ...
+    HttpClientModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [],
   bootstrap: [AppComponent]
