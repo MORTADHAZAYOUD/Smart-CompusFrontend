@@ -1,0 +1,267 @@
+<div class="children-management">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>👶 Gestion de mes enfants</h1>
+    <p>Gérez les comptes de vos enfants et consultez leurs informations académiques</p>
+  </div>
+
+  <!-- Success/Error Messages -->
+  <div class="alert alert-success" *ngIf="successMessage">
+    ✅ {{ successMessage }}
+    <button class="close-btn" (click)="clearMessages()">×</button>
+  </div>
+
+  <div class="alert alert-error" *ngIf="errorMessage">
+    ❌ {{ errorMessage }}
+    <button class="close-btn" (click)="clearMessages()">×</button>
+  </div>
+
+  <!-- Search and Actions -->
+  <div class="search-section">
+    <div class="search-bar">
+      <input 
+        type="text" 
+        placeholder="🔍 Rechercher un enfant..."
+        [(ngModel)]="searchQuery"
+        class="search-input">
+    </div>
+    <button class="btn btn-primary" (click)="openLinkChildModal()">
+      <span class="icon">➕</span>
+      Lier un nouvel enfant
+    </button>
+  </div>
+
+  <!-- Children Grid -->
+  <div class="children-grid">
+    <div class="child-card" *ngFor="let child of filteredChildren">
+      <div class="child-header">
+        <div class="child-avatar">
+          <span class="avatar-icon">👤</span>
+        </div>
+        <div class="child-basic-info">
+          <h3 class="child-name">{{ child.name }}</h3>
+          <p class="child-details">{{ child.class }} • {{ calculateAge(child.dateOfBirth) }} ans</p>
+          <p class="student-id">ID: {{ child.studentId }}</p>
+        </div>
+        <div class="child-status">
+          <span 
+            class="status-badge"
+            [style.background-color]="getStatusColor(child.status)">
+            {{ getStatusText(child.status) }}
+          </span>
+        </div>
+      </div>
+
+      <div class="child-metrics">
+        <div class="metric">
+          <div class="metric-icon">📚</div>
+          <div class="metric-value" [style.color]="getGradeColor(child.averageGrade)">
+            {{ child.averageGrade }}/20
+          </div>
+          <div class="metric-label">Moyenne</div>
+        </div>
+        <div class="metric">
+          <div class="metric-icon">📅</div>
+          <div class="metric-value">{{ child.attendance }}%</div>
+          <div class="metric-label">Assiduité</div>
+        </div>
+        <div class="metric">
+          <div class="metric-icon">⭐</div>
+          <div class="metric-value" [style.color]="getBehaviorColor(child.behaviorRating)">
+            {{ child.behaviorRating }}
+          </div>
+          <div class="metric-label">Comportement</div>
+        </div>
+      </div>
+
+      <div class="child-actions">
+        <button class="btn btn-outline" (click)="openChildDetail(child)">
+          👁️ Voir détails
+        </button>
+        <button class="btn btn-danger" (click)="unlinkChild(child)">
+          🔗 Dissocier
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredChildren.length === 0">
+    <div class="empty-icon">👶</div>
+    <h3>Aucun enfant trouvé</h3>
+    <p *ngIf="searchQuery">Aucun enfant ne correspond à votre recherche.</p>
+    <p *ngIf="!searchQuery">Vous n'avez pas encore lié d'enfant à votre compte.</p>
+    <button class="btn btn-primary" (click)="openLinkChildModal()">
+      ➕ Lier un enfant
+    </button>
+  </div>
+</div>
+
+<!-- Link Child Modal -->
+<div class="modal-overlay" *ngIf="showLinkChildModal" (click)="closeLinkChildModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>➕ Lier un nouvel enfant</h2>
+      <button class="close-btn" (click)="closeLinkChildModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="studentId">ID Étudiant *</label>
+        <input 
+          type="text" 
+          id="studentId"
+          [(ngModel)]="linkChildRequest.studentId"
+          placeholder="Ex: STU2024001"
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="studentName">Nom de l'enfant *</label>
+        <input 
+          type="text" 
+          id="studentName"
+          [(ngModel)]="linkChildRequest.studentName"
+          placeholder="Nom complet de l'enfant"
+          class="form-control">
+      </div>
+
+      <div class="form-group">
+        <label for="verificationCode">Code de vérification (optionnel)</label>
+        <input 
+          type="text" 
+          id="verificationCode"
+          [(ngModel)]="linkChildRequest.verificationCode"
+          placeholder="Code fourni par l'établissement"
+          class="form-control">
+      </div>
+
+      <div class="info-note">
+        <p><strong>ℹ️ Note:</strong> L'enfant doit être préalablement inscrit dans le système pour pouvoir être lié à votre compte parent.</p>
+      </div>
+
+      <div class="alert alert-error" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="alert alert-success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeLinkChildModal()" [disabled]="isLoading">
+        Annuler
+      </button>
+      <button class="btn btn-primary" (click)="linkNewChild()" [disabled]="isLoading">
+        <span *ngIf="isLoading">⏳ Liaison en cours...</span>
+        <span *ngIf="!isLoading">✅ Lier l'enfant</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Child Detail Modal -->
+<div class="modal-overlay" *ngIf="showChildDetailModal" (click)="closeChildDetail()">
+  <div class="modal modal-large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>👤 {{ selectedChild?.name }}</h2>
+      <button class="close-btn" (click)="closeChildDetail()">×</button>
+    </div>
+
+    <div class="modal-body" *ngIf="selectedChild">
+      <div class="detail-grid">
+        <!-- Basic Information -->
+        <div class="detail-section">
+          <h3>📋 Informations générales</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Nom complet</label>
+              <span>{{ selectedChild.name }}</span>
+            </div>
+            <div class="info-item">
+              <label>Classe</label>
+              <span>{{ selectedChild.class }}</span>
+            </div>
+            <div class="info-item">
+              <label>Âge</label>
+              <span>{{ calculateAge(selectedChild.dateOfBirth) }} ans</span>
+            </div>
+            <div class="info-item">
+              <label>ID Étudiant</label>
+              <span>{{ selectedChild.studentId }}</span>
+            </div>
+            <div class="info-item">
+              <label>Date de liaison</label>
+              <span>{{ formatDate(selectedChild.linkedDate) }}</span>
+            </div>
+            <div class="info-item">
+              <label>Contact d'urgence</label>
+              <input 
+                type="text" 
+                [value]="selectedChild.emergencyContact || ''"
+                (blur)="updateEmergencyContact(selectedChild, $event.target.value)"
+                placeholder="Numéro de téléphone"
+                class="editable-field">
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Performance -->
+        <div class="detail-section">
+          <h3>📚 Performance académique</h3>
+          <div class="subjects-list">
+            <div class="subject-item" *ngFor="let subject of selectedChild.subjects">
+              <div class="subject-header">
+                <span class="subject-name">{{ subject.name }}</span>
+                <span class="subject-teacher">{{ subject.teacher }}</span>
+              </div>
+              <div class="subject-metrics">
+                <div class="subject-metric">
+                  <span class="metric-label">Note</span>
+                  <span class="metric-value" [style.color]="getGradeColor(subject.currentGrade)">
+                    {{ subject.currentGrade }}/20
+                  </span>
+                </div>
+                <div class="subject-metric">
+                  <span class="metric-label">Assiduité</span>
+                  <span class="metric-value">{{ subject.attendance }}%</span>
+                </div>
+                <div class="subject-metric">
+                  <span class="metric-label">Dernière activité</span>
+                  <span class="metric-value">{{ formatDate(subject.lastActivity) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Teachers -->
+        <div class="detail-section">
+          <h3>👨‍🏫 Équipe pédagogique</h3>
+          <div class="teachers-list">
+            <div class="teacher-item" *ngFor="let teacher of selectedChild.teachers">
+              <div class="teacher-info">
+                <div class="teacher-name">{{ teacher.name }}</div>
+                <div class="teacher-subject">{{ teacher.subject }}</div>
+                <div class="teacher-contact">
+                  <span *ngIf="teacher.email">📧 {{ teacher.email }}</span>
+                  <span *ngIf="teacher.phone">📞 {{ teacher.phone }}</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline" (click)="contactTeacher(teacher)">
+                📧 Contacter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeChildDetail()">
+        Fermer
+      </button>
+    </div>
+  </div>
+</div>
