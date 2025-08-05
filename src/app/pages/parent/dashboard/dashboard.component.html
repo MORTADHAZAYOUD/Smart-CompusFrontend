@@ -1,0 +1,191 @@
+<!-- Parent Dashboard Template -->
+<div class="parent-dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Espace Parent</h1>
+    <p>Suivez la scolarité de vos enfants</p>
+    <div class="user-info">
+      <span>{{ parentName }}</span>
+      <span class="role">Parent</span>
+      <div class="notification-badge">{{ stats.messagesPendants }}</div>
+    </div>
+  </div>
+
+  <!-- Global Stats -->
+  <div class="stats-row">
+    <div class="stat-card primary">
+      <h3>{{ stats.nombreEnfants }}</h3>
+      <p>Enfants suivis</p>
+      <div class="stat-icon">👨‍👩‍👧‍👦</div>
+    </div>
+    <div class="stat-card success">
+      <h3>{{ stats.moyenneGenerale }}</h3>
+      <p>Moyenne Générale</p>
+      <div class="stat-icon">📊</div>
+    </div>
+    <div class="stat-card warning">
+      <h3>{{ stats.tauxPresenceGlobal }}%</h3>
+      <p>Présence Globale</p>
+      <div class="stat-icon">✅</div>
+    </div>
+    <div class="stat-card info">
+      <h3>{{ stats.messagesPendants }}</h3>
+      <p>Messages Pendants</p>
+      <div class="stat-icon">💬</div>
+    </div>
+  </div>
+
+  <!-- Children Overview -->
+  <div class="children-section">
+    <h2>Vos Enfants</h2>
+    <div class="children-grid">
+      <div class="child-card" *ngFor="let child of children">
+        <div class="child-header">
+          <div class="child-avatar">{{ child.prenom.charAt(0) }}</div>
+          <div class="child-info">
+            <h3>{{ child.prenom }} {{ child.nom }}</h3>
+            <p>{{ child.classe }}</p>
+          </div>
+        </div>
+        
+        <div class="child-stats">
+          <div class="stat-item">
+            <span class="label">Moyenne:</span>
+            <span class="value" [ngClass]="getChildGradeClass(child.moyenne)">
+              {{ child.moyenne }}
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="label">Présence:</span>
+            <span class="value" [ngClass]="getPresenceClass(child.tauxPresence)">
+              {{ child.tauxPresence }}%
+            </span>
+          </div>
+        </div>
+
+        <div class="child-actions">
+          <button class="btn-small btn-primary" (click)="navigateToChild(child.id, 'notes')">
+            Notes
+          </button>
+          <button class="btn-small btn-secondary" (click)="navigateToChild(child.id, 'presence')">
+            Présences
+          </button>
+          <button class="btn-small btn-accent" (click)="navigateToChild(child.id, 'planning')">
+            Planning
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Features Grid -->
+  <div class="features-section">
+    <h2>Fonctionnalités</h2>
+    <div class="features-grid">
+      <!-- Child Tracking -->
+      <div class="feature-card tracking" (click)="navigateTo('child-tracking')">
+        <div class="card-icon">👨‍👩‍👧‍👦</div>
+        <h3>Suivi Enfant</h3>
+        <p>Consultez le profil complet de vos enfants, leurs informations personnelles et leur parcours scolaire.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Voir profils</button>
+          <button class="btn-secondary">Modifier infos</button>
+        </div>
+      </div>
+
+      <!-- Academic Monitoring -->
+      <div class="feature-card academic" (click)="navigateTo('child-notes')">
+        <div class="card-icon">📋</div>
+        <h3>Consulter Notes</h3>
+        <p>Suivez les résultats scolaires de vos enfants, consultez les notes et les appréciations des enseignants.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Voir notes</button>
+          <button class="btn-secondary">Analyses</button>
+        </div>
+      </div>
+
+      <!-- Presence Monitoring -->
+      <div class="feature-card presence" (click)="navigateTo('child-presence')">
+        <div class="card-icon">✅</div>
+        <h3>Suivre Présences</h3>
+        <p>Surveillez l'assiduité de vos enfants, consultez les absences et justifiez si nécessaire.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Présences</button>
+          <button class="btn-secondary">Justifier</button>
+        </div>
+      </div>
+
+      <!-- Planning -->
+      <div class="feature-card planning" (click)="navigateTo('planning')">
+        <div class="card-icon">📅</div>
+        <h3>Planning</h3>
+        <p>Consultez l'emploi du temps de vos enfants et les événements scolaires à venir.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Emploi du temps</button>
+          <button class="btn-secondary">Événements</button>
+        </div>
+      </div>
+
+      <!-- Communication -->
+      <div class="feature-card communication" (click)="navigateTo('messages')">
+        <div class="card-icon">💬</div>
+        <h3>Communication</h3>
+        <p>Échangez avec les enseignants et l'administration. Consultez vos messages et notifications.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Messagerie</button>
+          <button class="btn-secondary">Nouveau message</button>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="feature-card notifications" (click)="navigateTo('notifications')">
+        <div class="card-icon">🔔</div>
+        <h3>Notifications</h3>
+        <p>Recevez les alertes importantes concernant vos enfants et les actualités de l'établissement.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Voir alertes</button>
+          <button class="btn-secondary">Paramètres</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Info Panels -->
+  <div class="quick-info-section">
+    <!-- Upcoming Events -->
+    <div class="info-panel">
+      <h3>Prochains Événements</h3>
+      <div class="event-list">
+        <div class="event-item" *ngFor="let event of upcomingEvents">
+          <div class="event-date">
+            <span class="day">{{ event.date | date:'dd' }}</span>
+            <span class="month">{{ event.date | date:'MMM' }}</span>
+          </div>
+          <div class="event-content">
+            <h4>{{ event.titre }}</h4>
+            <p>{{ event.heure }} - {{ event.enseignant }}</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn-link" (click)="navigateTo('planning')">Voir tout le planning</button>
+    </div>
+
+    <!-- Recent Notifications -->
+    <div class="info-panel">
+      <h3>Notifications Récentes</h3>
+      <div class="notification-list">
+        <div class="notification-item" *ngFor="let notification of recentNotifications" [ngClass]="notification.type">
+          <div class="notification-icon">{{ getNotificationIcon(notification.type) }}</div>
+          <div class="notification-content">
+            <h4>{{ notification.titre }}</h4>
+            <p>{{ notification.message }}</p>
+            <span class="notification-child">{{ notification.enfant }}</span>
+            <small>{{ notification.date | date:'short' }}</small>
+          </div>
+          <div class="notification-status" *ngIf="!notification.lu">•</div>
+        </div>
+      </div>
+      <button class="btn-link" (click)="navigateTo('notifications')">Voir toutes les notifications</button>
+    </div>
+  </div>
+</div>

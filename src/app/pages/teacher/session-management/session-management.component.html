@@ -1,0 +1,171 @@
+<div class="session-management-container">
+  <div class="page-header">
+    <h1>Gestion des Séances</h1>
+    <p>Créez et gérez vos séances de cours</p>
+    <button class="btn-primary" (click)="createNewSession()">
+      ➕ Nouvelle Séance
+    </button>
+  </div>
+
+  <div class="content-layout">
+    <!-- Sessions List -->
+    <div class="sessions-sidebar">
+      <h2>Mes Séances</h2>
+      <div class="sessions-list">
+        <div class="session-item" 
+             *ngFor="let session of sessions" 
+             [class.active]="selectedSession?.id === session.id"
+             [ngClass]="getSessionStatusClass(session)"
+             (click)="selectSession(session)">
+          <div class="session-type-badge" [ngClass]="getSessionTypeClass(session.type)">
+            {{ session.type }}
+          </div>
+          <div class="session-info">
+            <h3>{{ session.matiere }}</h3>
+            <p>{{ session.classe }}</p>
+            <div class="session-meta">
+              <span class="date">{{ session.date | date:'dd/MM/yyyy' }}</span>
+              <span class="time">{{ session.heureDebut }} - {{ session.heureFin }}</span>
+              <span class="room">{{ session.salle }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session Details -->
+    <div class="session-details" *ngIf="selectedSession && !showCreateForm && !showEditForm">
+      <div class="details-header">
+        <h2>{{ selectedSession.matiere }} - {{ selectedSession.classe }}</h2>
+        <div class="header-actions">
+          <button class="btn-primary" (click)="markPresence(selectedSession.id)">
+            ✅ Présences
+          </button>
+          <button class="btn-secondary" (click)="editSession()">
+            ✏️ Modifier
+          </button>
+          <button class="btn-danger" (click)="deleteSession()">
+            🗑️ Supprimer
+          </button>
+        </div>
+      </div>
+
+      <div class="session-details-content">
+        <div class="details-grid">
+          <div class="detail-item">
+            <label>Type de séance:</label>
+            <span class="session-type" [ngClass]="getSessionTypeClass(selectedSession.type)">
+              {{ selectedSession.type }}
+            </span>
+          </div>
+          <div class="detail-item">
+            <label>Date:</label>
+            <span>{{ selectedSession.date | date:'fullDate' }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Horaire:</label>
+            <span>{{ selectedSession.heureDebut }} - {{ selectedSession.heureFin }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Salle:</label>
+            <span>{{ selectedSession.salle }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Classe:</label>
+            <span>{{ selectedSession.classe }}</span>
+          </div>
+        </div>
+
+        <div class="session-content" *ngIf="selectedSession.contenu">
+          <h3>Contenu du cours</h3>
+          <p>{{ selectedSession.contenu }}</p>
+        </div>
+
+        <div class="session-objectives" *ngIf="selectedSession.objectifs?.length">
+          <h3>Objectifs pédagogiques</h3>
+          <ul>
+            <li *ngFor="let objectif of selectedSession.objectifs">{{ objectif }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create/Edit Form -->
+    <div class="session-form" *ngIf="showCreateForm || showEditForm">
+      <div class="form-header">
+        <h2>{{ showCreateForm ? 'Nouvelle Séance' : 'Modifier Séance' }}</h2>
+      </div>
+
+      <form class="session-edit-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Matière:</label>
+            <input type="text" [(ngModel)]="newSession.matiere" name="matiere" required>
+          </div>
+          <div class="form-group">
+            <label>Classe:</label>
+            <input type="text" [(ngModel)]="newSession.classe" name="classe" required>
+          </div>
+          <div class="form-group">
+            <label>Type:</label>
+            <select [(ngModel)]="newSession.type" name="type" required>
+              <option value="Cours">Cours</option>
+              <option value="TD">TD</option>
+              <option value="TP">TP</option>
+              <option value="Examen">Examen</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date:</label>
+            <input type="date" [(ngModel)]="newSession.date" name="date" required>
+          </div>
+          <div class="form-group">
+            <label>Heure début:</label>
+            <input type="time" [(ngModel)]="newSession.heureDebut" name="heureDebut" required>
+          </div>
+          <div class="form-group">
+            <label>Heure fin:</label>
+            <input type="time" [(ngModel)]="newSession.heureFin" name="heureFin" required>
+          </div>
+          <div class="form-group">
+            <label>Salle:</label>
+            <input type="text" [(ngModel)]="newSession.salle" name="salle" required>
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Contenu du cours:</label>
+          <textarea [(ngModel)]="newSession.contenu" name="contenu" rows="4" 
+                   placeholder="Décrivez le contenu de la séance..."></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Objectifs pédagogiques:</label>
+          <textarea [(ngModel)]="newSession.objectifs" name="objectifs" rows="3" 
+                   placeholder="Listez les objectifs (un par ligne)..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-primary" (click)="saveSession()">
+            💾 {{ showCreateForm ? 'Créer' : 'Sauvegarder' }}
+          </button>
+          <button type="button" class="btn-secondary" (click)="cancelForm()">
+            ❌ Annuler
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- No Selection -->
+    <div class="no-selection" *ngIf="!selectedSession && !showCreateForm && !showEditForm">
+      <div class="empty-state">
+        <div class="empty-icon">📚</div>
+        <h3>Sélectionnez une séance</h3>
+        <p>Choisissez une séance dans la liste pour voir ses détails ou créez-en une nouvelle</p>
+        <button class="btn-primary" (click)="createNewSession()">
+          ➕ Créer une séance
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
