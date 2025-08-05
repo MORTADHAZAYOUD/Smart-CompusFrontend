@@ -3,6 +3,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { DashboardComponent } from './pages/student/dashboard/dashboard.component';
+
 export const routes: Routes = [
     {path:'login',component: LoginComponent},
     {path:'register',component: RegisterComponent},
@@ -12,5 +13,9 @@ export const routes: Routes = [
     {
         path: 'admin',
         loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule)
+    },
+    {
+        path: 'student',
+        loadChildren: () => import('./features/student/student.module').then(m => m.StudentModule)
     }
 ];

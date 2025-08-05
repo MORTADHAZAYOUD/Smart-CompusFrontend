@@ -1,0 +1,105 @@
+<div class="student-layout">
+  <mat-sidenav-container class="sidenav-container">
+    <!-- Sidebar -->
+    <mat-sidenav #drawer class="sidenav" fixedInViewport
+                 [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+                 [mode]="(isHandset$ | async) ? 'over' : 'side'"
+                 [opened]="(isHandset$ | async) === false">
+      
+      <!-- Student Profile Header -->
+      <div class="student-profile-header">
+        <div class="profile-image">
+          <img [src]="student?.photo" [alt]="student?.firstName + ' ' + student?.lastName" *ngIf="student">
+          <mat-spinner diameter="40" *ngIf="loading"></mat-spinner>
+        </div>
+        <div class="profile-info" *ngIf="student">
+          <h3>{{ student.firstName }} {{ student.lastName }}</h3>
+          <p>{{ student.studentId }}</p>
+          <p>{{ student.class }}</p>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <mat-nav-list>
+        <a mat-list-item 
+           *ngFor="let item of navigationItems"
+           [routerLink]="item.route"
+           routerLinkActive="active"
+           class="nav-item">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      </mat-nav-list>
+
+      <!-- Logout Button -->
+      <div class="logout-section">
+        <button mat-button (click)="logout()" class="logout-btn">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </div>
+    </mat-sidenav>
+
+    <!-- Main Content -->
+    <mat-sidenav-content class="sidenav-content">
+      <!-- Top Toolbar -->
+      <mat-toolbar color="primary" class="toolbar">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button
+                (click)="drawer.toggle()" *ngIf="isHandset$ | async">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        
+        <span class="toolbar-title">SmartCampus Student Portal</span>
+        
+        <span class="toolbar-spacer"></span>
+        
+        <!-- Notifications -->
+        <button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="notification-btn">
+          <mat-icon [matBadge]="unreadNotifications" matBadgeColor="warn">notifications</mat-icon>
+        </button>
+        <mat-menu #notificationMenu="matMenu">
+          <div class="notification-menu-header">
+            <h3>Notifications</h3>
+            <button mat-button routerLink="/student/notifications">View All</button>
+          </div>
+          <mat-divider></mat-divider>
+          <div class="notification-list">
+            <div class="notification-item" *ngFor="let notification of recentNotifications">
+              <mat-icon [class]="'notification-icon-' + notification.type">
+                {{ notification.type === 'info' ? 'info' : 
+                   notification.type === 'warning' ? 'warning' : 
+                   notification.type === 'success' ? 'check_circle' : 'error' }}
+              </mat-icon>
+              <div class="notification-content">
+                <h4>{{ notification.title }}</h4>
+                <p>{{ notification.message }}</p>
+                <small>{{ notification.date | date:'short' }}</small>
+              </div>
+            </div>
+          </div>
+        </mat-menu>
+
+        <!-- User Menu -->
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <img [src]="student?.photo" [alt]="student?.firstName" *ngIf="student" class="user-avatar">
+          <mat-icon *ngIf="!student">account_circle</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item routerLink="/student/profile">
+            <mat-icon>person</mat-icon>
+            <span>My Profile</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </mat-toolbar>
+
+      <!-- Page Content -->
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

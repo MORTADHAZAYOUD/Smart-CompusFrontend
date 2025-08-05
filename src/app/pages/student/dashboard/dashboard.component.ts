@@ -1,38 +1,23 @@
 // student-dashboard.component.ts
 import { Component, OnInit } from '@angular/core';
-// Update the import path to the correct location of student.service.ts
-import { StudentService } from '../../../services/student.service';
+import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
-  selector: 'app-student-dashboard',
-  templateUrl: 'dashboard.component.html',
-  styleUrls: ['dashboard.component.scss']
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
+  standalone: true,
+  imports: [MatCardModule, MatProgressSpinnerModule]
 })
 export class DashboardComponent implements OnInit {
-  
-  stats = {
-    moyenne: 15.5,
-    tauxPresence: 92,
-    coursSemaine: 8,
-    devoirsRendre: 3
-  };
 
-  studentName = 'John Doe';
-
-  constructor(private studentService: StudentService) {}
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-    this.loadDashboardData();
+    // Redirect to the new student interface
+    this.router.navigate(['/student/dashboard']);
   }
 
-  loadDashboardData(): void {
-    this.studentService.getDashboardStats().subscribe(data => {
-      this.stats = data;
-    });
-  }
-
-  navigateTo(route: string): void {
-    // Simple navigation logic
-    window.location.href = `/student/${route}`;
-  }
 }
