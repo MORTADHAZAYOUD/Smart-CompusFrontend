@@ -1,0 +1,31 @@
+<div class="notification-item" 
+     [ngClass]="{'compact': compact, 'unread': !notification.isRead, 'notification-' + notification.type}"
+     (click)="onMarkAsRead()">
+  
+  <div class="notification-icon">
+    <mat-icon [color]="getNotificationColor(notification.type)">
+      {{getNotificationIcon(notification.type)}}
+    </mat-icon>
+  </div>
+  
+  <div class="notification-content">
+    <div class="notification-header">
+      <h4 class="notification-title">{{notification.title}}</h4>
+      <span class="notification-time">{{formatDate(notification.date)}}</span>
+    </div>
+    
+    <div class="notification-text" [ngClass]="{'truncated': compact}">
+      {{notification.content}}
+    </div>
+    
+    <div class="notification-actions" *ngIf="notification.actionUrl && !compact">
+      <button mat-button color="primary" (click)="onActionClick(); $event.stopPropagation()">
+        View Details
+      </button>
+    </div>
+  </div>
+  
+  <div class="notification-status" *ngIf="!notification.isRead">
+    <div class="unread-indicator"></div>
+  </div>
+</div>

@@ -1,0 +1,227 @@
+<div class="notes-container">
+  <div class="notes-header">
+    <h2>My Notes & Grades</h2>
+    <div class="header-stats" *ngIf="globalAverage$ | async as average">
+      <app-stat-card
+        title="Global Average"
+        [value]="average"
+        suffix="/20"
+        icon="grade"
+        [color]="getGradeColor(average, 20)"
+        [percentage]="(average / 20) * 100">
+      </app-stat-card>
+    </div>
+  </div>
+
+  <!-- Subject Summaries -->
+  <div class="subjects-section" *ngIf="subjectSummaries$ | async as summaries">
+    <h3 class="section-title">
+      <mat-icon>school</mat-icon>
+      Subject Overview
+    </h3>
+    
+    <div class="subjects-grid">
+      <mat-card class="subject-card" *ngFor="let summary of summaries">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>{{getSubjectIcon(summary.subject)}}</mat-icon>
+            <div class="subject-info">
+              <span class="subject-name">{{summary.subject}}</span>
+              <span class="subject-code">{{summary.subjectCode}}</span>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="subject-stats">
+            <div class="stat-item">
+              <label>Weighted Average</label>
+              <span class="average" [ngClass]="'grade-' + getGradeColor(summary.weightedAverage, 20)">
+                {{summary.weightedAverage | number:'1.1-1'}}/20
+              </span>
+            </div>
+            <div class="stat-item">
+              <label>Total Evaluations</label>
+              <span>{{summary.notes.length}}</span>
+            </div>
+            <div class="stat-item">
+              <label>Total Coefficient</label>
+              <span>{{summary.totalCoefficient}}</span>
+            </div>
+          </div>
+          
+          <div class="progress-section">
+            <label>Performance</label>
+            <mat-progress-bar 
+              mode="determinate" 
+              [value]="getGradePercentage(summary.weightedAverage, 20)"
+              [ngClass]="'progress-' + getGradeColor(summary.weightedAverage, 20)">
+            </mat-progress-bar>
+            <span class="percentage">{{getGradePercentage(summary.weightedAverage, 20) | number:'1.0-0'}}%</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Filters and Controls -->
+  <div class="controls-section">
+    <h3 class="section-title">
+      <mat-icon>list</mat-icon>
+      Detailed Notes
+    </h3>
+    
+    <div class="controls-bar">
+      <mat-form-field appearance="outline" class="subject-filter">
+        <mat-label>Filter by Subject</mat-label>
+        <mat-select [(value)]="selectedSubject">
+          <mat-option value="all">All Subjects</mat-option>
+          <mat-option *ngFor="let summary of (subjectSummaries$ | async)" [value]="summary.subject">
+            {{summary.subject}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="sort-filter">
+        <mat-label>Sort By</mat-label>
+        <mat-select [(value)]="sortBy">
+          <mat-option value="date">Date</mat-option>
+          <mat-option value="grade">Grade</mat-option>
+          <mat-option value="subject">Subject</mat-option>
+          <mat-option value="examType">Exam Type</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-icon-button 
+              (click)="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
+              [matTooltip]="sortDirection === 'asc' ? 'Sort Descending' : 'Sort Ascending'">
+        <mat-icon>{{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Notes Table -->
+  <div class="notes-table-section">
+    <mat-card>
+      <mat-card-content>
+        <div class="table-container">
+          <table mat-table [dataSource]="getFilteredNotes() | async" class="notes-table">
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef 
+                  class="sortable-header" 
+                  (click)="onSortChange('date')">
+                Date
+                <mat-icon *ngIf="sortBy === 'date'">
+                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+                </mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let note">
+                <div class="date-cell">
+                  <span class="date">{{formatDate(note.date)}}</span>
+                  <span class="subject-mobile">{{note.subject}}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Subject Column (Desktop only) -->
+            <ng-container matColumnDef="subject">
+              <th mat-header-cell *matHeaderCellDef 
+                  class="sortable-header" 
+                  (click)="onSortChange('subject')">
+                Subject
+                <mat-icon *ngIf="sortBy === 'subject'">
+                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+                </mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let note">
+                <div class="subject-cell">
+                  <mat-icon>{{getSubjectIcon(note.subject)}}</mat-icon>
+                  <div class="subject-info">
+                    <span class="subject-name">{{note.subject}}</span>
+                    <span class="subject-code">{{note.subjectCode}}</span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Exam Type Column -->
+            <ng-container matColumnDef="examType">
+              <th mat-header-cell *matHeaderCellDef 
+                  class="sortable-header" 
+                  (click)="onSortChange('examType')">
+                Type
+                <mat-icon *ngIf="sortBy === 'examType'">
+                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+                </mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let note">
+                <mat-chip [color]="'primary'" selected>
+                  <mat-icon matChipAvatar>{{getExamTypeIcon(note.examType)}}</mat-icon>
+                  {{note.examType}}
+                </mat-chip>
+              </td>
+            </ng-container>
+
+            <!-- Grade Column -->
+            <ng-container matColumnDef="grade">
+              <th mat-header-cell *matHeaderCellDef 
+                  class="sortable-header" 
+                  (click)="onSortChange('grade')">
+                Grade
+                <mat-icon *ngIf="sortBy === 'grade'">
+                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
+                </mat-icon>
+              </th>
+              <td mat-cell *matCellDef="let note">
+                <div class="grade-cell">
+                  <span class="grade" [ngClass]="'grade-' + getGradeColor(note.grade, note.maxGrade)">
+                    {{note.grade}}/{{note.maxGrade}}
+                  </span>
+                  <div class="grade-progress">
+                    <mat-progress-bar 
+                      mode="determinate" 
+                      [value]="getGradePercentage(note.grade, note.maxGrade)"
+                      [ngClass]="'progress-' + getGradeColor(note.grade, note.maxGrade)">
+                    </mat-progress-bar>
+                  </div>
+                  <span class="percentage">{{getGradePercentage(note.grade, note.maxGrade) | number:'1.0-0'}}%</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Coefficient Column -->
+            <ng-container matColumnDef="coefficient">
+              <th mat-header-cell *matHeaderCellDef>Coeff.</th>
+              <td mat-cell *matCellDef="let note">
+                <mat-chip class="coefficient-chip">{{note.coefficient}}</mat-chip>
+              </td>
+            </ng-container>
+
+            <!-- Teacher Column -->
+            <ng-container matColumnDef="teacher">
+              <th mat-header-cell *matHeaderCellDef>Teacher</th>
+              <td mat-cell *matCellDef="let note">
+                <div class="teacher-cell">
+                  <mat-icon>person</mat-icon>
+                  <span>{{note.teacher}}</span>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="note-row"></tr>
+          </table>
+        </div>
+        
+        <div class="table-footer" *ngIf="(getFilteredNotes() | async)?.length === 0">
+          <div class="empty-state">
+            <mat-icon>grade</mat-icon>
+            <h4>No notes found</h4>
+            <p>{{selectedSubject === 'all' ? 'No grades available yet.' : 'No grades found for ' + selectedSubject + '.'}}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

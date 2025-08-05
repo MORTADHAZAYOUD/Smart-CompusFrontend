@@ -1,0 +1,43 @@
+<div class="event-card" [ngClass]="{'compact': compact, 'optional': event.isOptional}">
+  <div class="event-header">
+    <div class="event-icon">
+      <mat-icon [color]="getEventTypeColor(event.type)">
+        {{getEventTypeIcon(event.type)}}
+      </mat-icon>
+    </div>
+    <div class="event-type">
+      <mat-chip [color]="getEventTypeColor(event.type)" selected>
+        {{event.type}}
+      </mat-chip>
+    </div>
+  </div>
+  
+  <div class="event-content">
+    <h4 class="event-title">{{event.title}}</h4>
+    
+    <div class="event-description" *ngIf="event.description && !compact">
+      <p>{{event.description}}</p>
+    </div>
+    
+    <div class="event-details">
+      <div class="event-date">
+        <mat-icon>calendar_today</mat-icon>
+        <span>{{formatDate(event.date)}}</span>
+      </div>
+      
+      <div class="event-time" *ngIf="event.startTime || event.endTime">
+        <mat-icon>access_time</mat-icon>
+        <span>{{getTimeRange()}}</span>
+      </div>
+      
+      <div class="event-location" *ngIf="event.location">
+        <mat-icon>location_on</mat-icon>
+        <span>{{event.location}}</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="event-status" *ngIf="event.isOptional">
+    <mat-icon class="optional-icon" color="accent">info</mat-icon>
+  </div>
+</div>
