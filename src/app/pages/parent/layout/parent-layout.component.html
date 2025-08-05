@@ -1,0 +1,56 @@
+<div class="parent-layout">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <h1 class="logo">🎓 SmartCompus - Espace Parent</h1>
+    </div>
+    <div class="header-right">
+      <div class="notification-badge" (click)="navigateTo('/parent/notifications')">
+        <span class="icon">🔔</span>
+        <span class="badge" *ngIf="hasNotifications()">{{ getNotificationCount() }}</span>
+      </div>
+      <div class="user-info">
+        <span class="user-name">{{ currentUser.name }}</span>
+        <span class="user-role">({{ currentUser.profession }})</span>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <span class="icon">🚪</span>
+        Déconnexion
+      </button>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="nav-menu">
+        <ul class="menu-list">
+          <li 
+            *ngFor="let item of menuItems" 
+            class="menu-item"
+            [class.active]="item.active"
+            (click)="navigateTo(item.route)">
+            <span class="menu-icon">{{ item.icon }}</span>
+            <span class="menu-label">{{ item.label }}</span>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Quick Stats -->
+      <div class="sidebar-footer">
+        <div class="quick-stats">
+          <h4>👨‍👩‍👧‍👦 Mes statistiques</h4>
+          <div class="stat-item">
+            <span class="stat-label">Enfants inscrits:</span>
+            <span class="stat-value">{{ currentUser.childrenCount }}</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

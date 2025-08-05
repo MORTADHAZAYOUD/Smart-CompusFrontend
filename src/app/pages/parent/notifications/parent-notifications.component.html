@@ -1,0 +1,86 @@
+<div class="notifications">
+  <div class="page-header">
+    <h1>🔔 Mes notifications</h1>
+    <p>Restez informé de toutes les actualités concernant vos enfants</p>
+  </div>
+
+  <div class="filters-section">
+    <div class="filters-row">
+      <select [(ngModel)]="selectedCategory" class="filter-select">
+        <option *ngFor="let category of categories" [value]="category.value">
+          {{ category.icon }} {{ category.label }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="selectedChild" class="filter-select">
+        <option value="all">👶 Tous les enfants</option>
+        <option *ngFor="let child of children.slice(1)" [value]="child">
+          {{ child }}
+        </option>
+      </select>
+
+      <label class="checkbox-label">
+        <input type="checkbox" [(ngModel)]="showOnlyUnread">
+        Non lues uniquement ({{ unreadCount }})
+      </label>
+    </div>
+
+    <div class="actions-row">
+      <button class="btn btn-sm btn-outline" (click)="markAllAsRead()">
+        ✅ Marquer tout comme lu
+      </button>
+      <button class="btn btn-sm btn-outline" (click)="clearAllRead()">
+        🗑️ Supprimer les lues
+      </button>
+    </div>
+  </div>
+
+  <div class="notifications-list">
+    <div 
+      class="notification-item"
+      *ngFor="let notification of filteredNotifications"
+      [class.unread]="!notification.read">
+      
+      <div class="notification-icon">
+        {{ getNotificationIcon(notification.type) }}
+      </div>
+      
+      <div class="notification-content">
+        <div class="notification-header">
+          <h4 class="notification-title">{{ notification.title }}</h4>
+          <span class="notification-time">{{ getTimeAgo(notification.date) }}</span>
+        </div>
+        <p class="notification-message">{{ notification.message }}</p>
+        <div class="notification-meta">
+          <span class="category-badge">
+            {{ getCategoryIcon(notification.category) }} {{ notification.category }}
+          </span>
+          <span class="child-name" *ngIf="notification.childName">
+            👤 {{ notification.childName }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="notification-actions">
+        <button 
+          class="btn-icon" 
+          [title]="notification.read ? 'Marquer comme non lu' : 'Marquer comme lu'"
+          (click)="notification.read ? markAsUnread(notification) : markAsRead(notification)">
+          {{ notification.read ? '📩' : '📧' }}
+        </button>
+        <button 
+          class="btn-icon delete"
+          title="Supprimer"
+          (click)="deleteNotification(notification)">
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+    <div class="empty-icon">🔔</div>
+    <h3>Aucune notification</h3>
+    <p>Aucune notification ne correspond à vos critères de filtrage.</p>
+  </div>
+</div>

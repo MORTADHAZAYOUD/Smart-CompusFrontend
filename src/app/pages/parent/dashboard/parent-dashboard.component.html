@@ -1,0 +1,220 @@
+<div class="dashboard">
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1>📊 Tableau de bord parent</h1>
+    <p class="welcome-message">Bienvenue! Voici un aperçu de la scolarité de vos enfants.</p>
+  </div>
+
+  <!-- Quick Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">👨‍👩‍👧‍👦</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ children.length }}</div>
+        <div class="stat-label">Enfants inscrits</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ getOverallAverageGrade() }}/20</div>
+        <div class="stat-label">Moyenne générale</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ getOverallAttendance() }}%</div>
+        <div class="stat-label">Assiduité moyenne</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📝</div>
+      <div class="stat-content">
+        <div class="stat-number">{{ getUpcomingExamsCount() }}</div>
+        <div class="stat-label">Examens à venir</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="main-grid">
+    
+    <!-- Children Overview -->
+    <div class="section children-overview">
+      <h2 class="section-title">
+        <span class="icon">👶</span>
+        Aperçu de mes enfants
+      </h2>
+      
+      <div class="children-cards">
+        <div class="child-card" *ngFor="let child of children">
+          <div class="child-header">
+            <div class="child-avatar">
+              <span class="avatar-icon">👤</span>
+            </div>
+            <div class="child-info">
+              <h3 class="child-name">{{ child.name }}</h3>
+              <p class="child-class">{{ child.class }}</p>
+            </div>
+            <div class="child-status">
+              <span 
+                class="behavior-badge" 
+                [style.background-color]="getBehaviorColor(child.behaviorRating)">
+                {{ child.behaviorRating }}
+              </span>
+            </div>
+          </div>
+
+          <div class="child-metrics">
+            <div class="metric">
+              <div class="metric-label">Moyenne générale</div>
+              <div class="metric-value grade">{{ child.averageGrade }}/20</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Assiduité</div>
+              <div class="metric-value attendance">{{ child.attendance }}%</div>
+            </div>
+          </div>
+
+          <div class="recent-grades">
+            <h4>Dernières notes</h4>
+            <div class="grades-list">
+              <div 
+                class="grade-item" 
+                *ngFor="let grade of child.recentGrades.slice(0, 3)">
+                <span class="subject">{{ grade.subject }}</span>
+                <span 
+                  class="grade-value"
+                  [style.color]="getGradeColor(grade.grade, grade.maxGrade)">
+                  {{ grade.grade }}/{{ grade.maxGrade }}
+                </span>
+                <span class="grade-date">{{ formatDate(grade.date) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="upcoming-exams" *ngIf="child.upcomingExams.length > 0">
+            <h4>Prochains examens</h4>
+            <div class="exams-list">
+              <div class="exam-item" *ngFor="let exam of child.upcomingExams.slice(0, 2)">
+                <span class="exam-subject">{{ exam.subject }}</span>
+                <span class="exam-date">{{ formatDate(exam.date) }}</span>
+                <span class="exam-time">{{ exam.time }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Notifications -->
+    <div class="section notifications">
+      <h2 class="section-title">
+        <span class="icon">🔔</span>
+        Notifications récentes
+        <span class="notification-count" *ngIf="getUnreadNotificationsCount() > 0">
+          {{ getUnreadNotificationsCount() }}
+        </span>
+      </h2>
+
+      <div class="notifications-list">
+        <div 
+          class="notification-item" 
+          *ngFor="let notification of recentNotifications.slice(0, 5)"
+          [class.unread]="!notification.read"
+          (click)="markNotificationAsRead(notification.id)">
+          
+          <div class="notification-icon">
+            {{ getNotificationIcon(notification.type) }}
+          </div>
+          
+          <div class="notification-content">
+            <div class="notification-header">
+              <h4 class="notification-title">{{ notification.title }}</h4>
+              <span class="notification-time">{{ formatDateTime(notification.date) }}</span>
+            </div>
+            <p class="notification-message">{{ notification.message }}</p>
+            <span class="notification-child" *ngIf="notification.childName">
+              👤 {{ notification.childName }}
+            </span>
+          </div>
+          
+          <div class="notification-status" *ngIf="!notification.read">
+            <span class="unread-dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-all-notifications">
+        <button class="btn btn-outline" routerLink="/parent/notifications">
+          Voir toutes les notifications
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section quick-actions">
+      <h2 class="section-title">
+        <span class="icon">⚡</span>
+        Actions rapides
+      </h2>
+
+      <div class="actions-grid">
+        <button class="action-btn" routerLink="/parent/children">
+          <span class="action-icon">👶</span>
+          <span class="action-label">Gérer mes enfants</span>
+        </button>
+
+        <button class="action-btn" routerLink="/parent/reports">
+          <span class="action-icon">📈</span>
+          <span class="action-label">Voir les rapports</span>
+        </button>
+
+        <button class="action-btn" routerLink="/parent/notifications">
+          <span class="action-icon">📢</span>
+          <span class="action-label">Toutes les notifications</span>
+        </button>
+
+        <button class="action-btn" routerLink="/parent/profile">
+          <span class="action-icon">⚙️</span>
+          <span class="action-label">Mon profil</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Calendar Overview -->
+    <div class="section calendar-overview">
+      <h2 class="section-title">
+        <span class="icon">📅</span>
+        Cette semaine
+      </h2>
+
+      <div class="calendar-content">
+        <div class="today-info">
+          <div class="date-display">
+            <span class="day">{{ currentDate.getDate() }}</span>
+            <span class="month">{{ currentDate.toLocaleDateString('fr-FR', { month: 'long' }) }}</span>
+          </div>
+        </div>
+
+        <div class="upcoming-events">
+          <h4>Événements à venir</h4>
+          <div class="events-list">
+            <div class="event-item" *ngFor="let child of children">
+              <div class="event" *ngFor="let exam of child.upcomingExams.slice(0, 2)">
+                <span class="event-date">{{ formatDate(exam.date) }}</span>
+                <span class="event-title">{{ exam.type }} - {{ exam.subject }}</span>
+                <span class="event-child">{{ child.name }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
