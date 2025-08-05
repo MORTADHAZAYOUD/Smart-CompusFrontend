@@ -1,0 +1,174 @@
+<div class="profile-container">
+  <!-- Loading Spinner -->
+  <div class="loading-container" *ngIf="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading profile...</p>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-content" *ngIf="!loading && student">
+    <!-- Header -->
+    <div class="profile-header">
+      <h1>My Profile</h1>
+      <div class="header-actions">
+        <button 
+          mat-raised-button 
+          color="primary" 
+          *ngIf="!editing"
+          (click)="toggleEdit()">
+          <mat-icon>edit</mat-icon>
+          Edit Profile
+        </button>
+        <div class="edit-actions" *ngIf="editing">
+          <button 
+            mat-button 
+            color="warn"
+            (click)="cancelEdit()">
+            Cancel
+          </button>
+          <button 
+            mat-raised-button 
+            color="primary"
+            (click)="saveProfile()"
+            [disabled]="profileForm.invalid">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Form -->
+    <form [formGroup]="profileForm" class="profile-form">
+      <div class="form-grid">
+        <!-- Profile Image Section -->
+        <div class="image-section">
+          <div class="profile-image-container">
+            <img 
+              [src]="getCurrentImage()" 
+              [alt]="student.firstName + ' ' + student.lastName"
+              class="profile-image">
+            <div class="image-overlay" *ngIf="editing">
+              <label for="image-upload" class="upload-label">
+                <mat-icon>camera_alt</mat-icon>
+                <span>Change Photo</span>
+              </label>
+              <input 
+                type="file" 
+                id="image-upload" 
+                accept="image/*"
+                (change)="onImageChange($event)"
+                style="display: none;">
+            </div>
+          </div>
+          <div class="student-info">
+            <h2>{{ student.firstName }} {{ student.lastName }}</h2>
+            <p class="student-id">{{ student.studentId }}</p>
+            <p class="student-class">{{ student.class }}</p>
+          </div>
+        </div>
+
+        <!-- Personal Information -->
+        <div class="form-section">
+          <h3>Personal Information</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" [readonly]="!editing">
+              <mat-error *ngIf="getFieldError('firstName')">
+                {{ getFieldError('firstName') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" [readonly]="!editing">
+              <mat-error *ngIf="getFieldError('lastName')">
+                {{ getFieldError('lastName') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" type="email" [readonly]="!editing">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-error *ngIf="getFieldError('email')">
+                {{ getFieldError('email') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone" [readonly]="!editing">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="getFieldError('phone')">
+                {{ getFieldError('phone') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Address</mat-label>
+            <textarea matInput formControlName="address" rows="3" [readonly]="!editing"></textarea>
+            <mat-error *ngIf="getFieldError('address')">
+              {{ getFieldError('address') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Birth Date</mat-label>
+            <input matInput [matDatepicker]="birthPicker" formControlName="birthDate" [readonly]="!editing">
+            <mat-datepicker-toggle matSuffix [for]="birthPicker"></mat-datepicker-toggle>
+            <mat-datepicker #birthPicker></mat-datepicker>
+            <mat-error *ngIf="getFieldError('birthDate')">
+              {{ getFieldError('birthDate') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Academic Information -->
+        <div class="form-section">
+          <h3>Academic Information</h3>
+                      <div class="info-grid">
+              <div class="info-item">
+                <label>Student ID</label>
+                <p>{{ student?.studentId }}</p>
+              </div>
+              <div class="info-item">
+                <label>Class</label>
+                <p>{{ student?.class }}</p>
+              </div>
+              <div class="info-item">
+                <label>Grade</label>
+                <p>{{ student?.grade }}</p>
+              </div>
+            </div>
+        </div>
+
+        <!-- Parent Information -->
+        <div class="form-section">
+          <h3>Parent/Guardian Information</h3>
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Parent Name</mat-label>
+              <input matInput formControlName="parentName" [readonly]="!editing">
+              <mat-error *ngIf="getFieldError('parentName')">
+                {{ getFieldError('parentName') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Parent Phone</mat-label>
+              <input matInput formControlName="parentPhone" [readonly]="!editing">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="getFieldError('parentPhone')">
+                {{ getFieldError('parentPhone') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

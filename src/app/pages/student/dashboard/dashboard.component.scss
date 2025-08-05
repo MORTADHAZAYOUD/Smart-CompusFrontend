@@ -171,3 +171,34 @@
     grid-template-columns: 1fr;
   }
 }
+
+.redirect-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  
+  mat-card {
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    
+    .loading-content {
+      padding: 40px 20px;
+      
+      h2 {
+        margin: 20px 0 10px 0;
+        color: #333;
+        font-size: 20px;
+        font-weight: 600;
+      }
+      
+      p {
+        color: #666;
+        font-size: 14px;
+        margin: 0;
+      }
+    }
+  }
+}

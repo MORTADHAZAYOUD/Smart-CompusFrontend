@@ -1,0 +1,259 @@
+.dashboard-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  
+  &.clickable {
+    cursor: pointer;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  &.loading {
+    pointer-events: none;
+  }
+  
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .card-content {
+    padding: 20px;
+    
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      
+      .card-title-section {
+        display: flex;
+        align-items: center;
+        flex: 1;
+        
+        .card-icon {
+          margin-right: 12px;
+          font-size: 24px;
+          width: 24px;
+          height: 24px;
+        }
+        
+        .title-group {
+          .card-title {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.2;
+          }
+          
+          .card-subtitle {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.2;
+          }
+        }
+      }
+      
+      .trend-indicator {
+        display: flex;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.05);
+        padding: 4px 8px;
+        border-radius: 12px;
+        
+        .trend-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          margin-right: 4px;
+        }
+        
+        .trend-value {
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+    }
+    
+    .card-value {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1;
+    }
+    
+    .card-action {
+      button {
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .dashboard-card {
+    .card-content {
+      padding: 16px;
+      
+      .card-header {
+        .card-title-section {
+          .card-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+          }
+          
+          .title-group {
+            .card-title {
+              font-size: 14px;
+            }
+            
+            .card-subtitle {
+              font-size: 11px;
+            }
+          }
+        }
+        
+        .trend-indicator {
+          padding: 3px 6px;
+          
+          .trend-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+          
+          .trend-value {
+            font-size: 11px;
+          }
+        }
+      }
+      
+      .card-value {
+        font-size: 28px;
+      }
+      
+      .card-action {
+        button {
+          font-size: 11px;
+          padding: 6px 12px;
+          
+          mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-card {
+    .card-content {
+      padding: 12px;
+      
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .card-title-section {
+          margin-bottom: 8px;
+        }
+        
+        .trend-indicator {
+          align-self: flex-end;
+        }
+      }
+      
+      .card-value {
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+// Animation
+.dashboard-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Focus states for accessibility
+.dashboard-card:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .dashboard-card {
+    background-color: #1e1e1e;
+    color: white;
+    
+    .card-content {
+      .card-header {
+        .card-title-section {
+          .title-group {
+            .card-title {
+              color: white;
+            }
+            
+            .card-subtitle {
+              color: #ccc;
+            }
+          }
+        }
+        
+        .trend-indicator {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+    
+    .loading-overlay {
+      background: rgba(30, 30, 30, 0.9);
+    }
+  }
+}

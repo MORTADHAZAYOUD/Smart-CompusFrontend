@@ -1,0 +1,421 @@
+.profile-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  
+  p {
+    margin-top: 16px;
+    color: #666;
+    font-size: 16px;
+  }
+}
+
+.profile-content {
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      
+      .edit-actions {
+        display: flex;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+.profile-form {
+  .form-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    
+    .image-section {
+      .profile-image-container {
+        position: relative;
+        margin-bottom: 20px;
+        
+        .profile-image {
+          width: 200px;
+          height: 200px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 4px solid #f0f0f0;
+          transition: all 0.3s ease;
+        }
+        
+        .image-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          
+          &:hover {
+            opacity: 1;
+          }
+          
+          .upload-label {
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 14px;
+            
+            mat-icon {
+              font-size: 24px;
+              width: 24px;
+              height: 24px;
+              margin-bottom: 4px;
+            }
+          }
+        }
+      }
+      
+      .student-info {
+        text-align: center;
+        
+        h2 {
+          font-size: 24px;
+          font-weight: 600;
+          color: #333;
+          margin: 0 0 8px 0;
+        }
+        
+        .student-id {
+          font-size: 14px;
+          color: #666;
+          margin: 0 0 4px 0;
+          font-weight: 500;
+        }
+        
+        .student-class {
+          font-size: 16px;
+          color: #2196F3;
+          margin: 0;
+          font-weight: 600;
+        }
+      }
+    }
+    
+    .form-section {
+      margin-bottom: 30px;
+      
+      h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+        margin: 0 0 20px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+      
+      .full-width {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        
+        .info-item {
+          background: #f8f9fa;
+          padding: 16px;
+          border-radius: 8px;
+          border-left: 4px solid #2196F3;
+          
+          label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+          }
+          
+          p {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Form field styling
+::ng-deep {
+  .mat-form-field {
+    width: 100%;
+    
+    &.mat-form-field-appearance-outline {
+      .mat-form-field-outline {
+        color: #e0e0e0;
+      }
+      
+      .mat-form-field-outline-thick {
+        color: #2196F3;
+      }
+    }
+    
+    .mat-form-field-label {
+      color: #666;
+    }
+    
+    .mat-input-element {
+      color: #333;
+      
+      &:read-only {
+        color: #999;
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .profile-form {
+    .form-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      
+      .image-section {
+        text-align: center;
+        
+        .profile-image-container {
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 15px;
+  }
+  
+  .profile-content {
+    .profile-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  }
+  
+  .profile-form {
+    .form-grid {
+      .form-section {
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        
+        .info-grid {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 10px;
+  }
+  
+  .profile-content {
+    .profile-header {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  }
+  
+  .profile-form {
+    .form-grid {
+      .image-section {
+        .profile-image-container {
+          .profile-image {
+            width: 150px;
+            height: 150px;
+          }
+        }
+        
+        .student-info {
+          h2 {
+            font-size: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Animation
+.profile-content {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Hover effects
+.profile-image-container:hover {
+  .profile-image {
+    border-color: #2196F3;
+  }
+}
+
+.info-item:hover {
+  background-color: #f0f8ff;
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+// Focus states for accessibility
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .profile-container {
+    background-color: #121212;
+    color: white;
+  }
+  
+  .profile-content {
+    .profile-header {
+      border-bottom-color: #333;
+      
+      h1 {
+        color: white;
+      }
+    }
+  }
+  
+  .profile-form {
+    .form-grid {
+      .image-section {
+        .student-info {
+          h2 {
+            color: white;
+          }
+          
+          .student-id {
+            color: #ccc;
+          }
+        }
+      }
+      
+      .form-section {
+        h3 {
+          color: white;
+          border-bottom-color: #333;
+        }
+        
+        .info-grid {
+          .info-item {
+            background-color: #1e1e1e;
+            border-left-color: #2196F3;
+            
+            label {
+              color: #ccc;
+            }
+            
+            p {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  ::ng-deep {
+    .mat-form-field {
+      &.mat-form-field-appearance-outline {
+        .mat-form-field-outline {
+          color: #333;
+        }
+      }
+      
+      .mat-form-field-label {
+        color: #ccc;
+      }
+      
+      .mat-input-element {
+        color: white;
+        
+        &:read-only {
+          color: #999;
+          background-color: #1e1e1e;
+        }
+      }
+    }
+  }
+}
