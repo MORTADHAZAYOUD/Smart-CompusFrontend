@@ -1,0 +1,145 @@
+<div class="child-tracking-container">
+  <div class="page-header">
+    <h1>Suivi des Enfants</h1>
+    <p>Consultez et gérez les profils de vos enfants</p>
+  </div>
+
+  <div class="content-layout">
+    <!-- Children List -->
+    <div class="children-sidebar">
+      <h2>Vos Enfants</h2>
+      <div class="children-list">
+        <div class="child-item" 
+             *ngFor="let child of children" 
+             [class.active]="selectedChild?.id === child.id"
+             (click)="selectChild(child)">
+          <div class="child-avatar">{{ child.prenom.charAt(0) }}</div>
+          <div class="child-info">
+            <h3>{{ child.prenom }} {{ child.nom }}</h3>
+            <p>{{ child.classe }}</p>
+            <div class="child-stats">
+              <span class="moyenne" [ngClass]="getGradeClass(child.moyenne)">
+                {{ child.moyenne }}
+              </span>
+              <span class="presence">{{ child.tauxPresence }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Child Details -->
+    <div class="child-details" *ngIf="selectedChild">
+      <div class="details-header">
+        <h2>{{ selectedChild.prenom }} {{ selectedChild.nom }}</h2>
+        <button class="btn-primary" (click)="editChild()" *ngIf="!showEditForm">
+          ✏️ Modifier
+        </button>
+      </div>
+
+      <!-- View Mode -->
+      <div class="profile-view" *ngIf="!showEditForm">
+        <div class="info-section">
+          <h3>Informations Personnelles</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Nom complet:</label>
+              <span>{{ selectedChild.prenom }} {{ selectedChild.nom }}</span>
+            </div>
+            <div class="info-item">
+              <label>Classe:</label>
+              <span>{{ selectedChild.classe }}</span>
+            </div>
+            <div class="info-item">
+              <label>Date de naissance:</label>
+              <span>{{ selectedChild.dateNaissance | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{ selectedChild.email }}</span>
+            </div>
+            <div class="info-item">
+              <label>Téléphone:</label>
+              <span>{{ selectedChild.telephone }}</span>
+            </div>
+            <div class="info-item">
+              <label>Enseignant principal:</label>
+              <span>{{ selectedChild.enseignantPrincipal }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="health-section" *ngIf="selectedChild.allergies?.length">
+          <h3>Informations Médicales</h3>
+          <div class="allergies">
+            <label>Allergies:</label>
+            <div class="allergy-list">
+              <span class="allergy-tag" *ngFor="let allergy of selectedChild.allergies">
+                {{ allergy }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact-section" *ngIf="selectedChild.contactUrgence">
+          <h3>Contact d'Urgence</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Nom:</label>
+              <span>{{ selectedChild.contactUrgence.nom }}</span>
+            </div>
+            <div class="info-item">
+              <label>Téléphone:</label>
+              <span>{{ selectedChild.contactUrgence.telephone }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Mode -->
+      <div class="profile-edit" *ngIf="showEditForm">
+        <form class="edit-form">
+          <div class="form-section">
+            <h3>Informations Personnelles</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Prénom:</label>
+                <input type="text" [(ngModel)]="selectedChild.prenom" name="prenom">
+              </div>
+              <div class="form-group">
+                <label>Nom:</label>
+                <input type="text" [(ngModel)]="selectedChild.nom" name="nom">
+              </div>
+              <div class="form-group">
+                <label>Email:</label>
+                <input type="email" [(ngModel)]="selectedChild.email" name="email">
+              </div>
+              <div class="form-group">
+                <label>Téléphone:</label>
+                <input type="tel" [(ngModel)]="selectedChild.telephone" name="telephone">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-primary" (click)="saveChild()">
+              💾 Sauvegarder
+            </button>
+            <button type="button" class="btn-secondary" (click)="cancelEdit()">
+              ❌ Annuler
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- No Selection -->
+    <div class="no-selection" *ngIf="!selectedChild">
+      <div class="empty-state">
+        <div class="empty-icon">👨‍👩‍👧‍👦</div>
+        <h3>Sélectionnez un enfant</h3>
+        <p>Choisissez un enfant dans la liste pour voir ses informations détaillées</p>
+      </div>
+    </div>
+  </div>
+</div>

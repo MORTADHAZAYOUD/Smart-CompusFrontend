@@ -1,0 +1,213 @@
+<!-- Teacher Dashboard Template -->
+<div class="teacher-dashboard-container">
+  <!-- Header -->
+  <div class="dashboard-header">
+    <h1>Espace Enseignant</h1>
+    <p>Gérez vos cours et suivez vos élèves</p>
+    <div class="user-info">
+      <span>{{ teacherName }}</span>
+      <span class="role">Enseignant</span>
+      <div class="notification-badge">{{ recentMessages.length }}</div>
+    </div>
+  </div>
+
+  <!-- Global Stats -->
+  <div class="stats-row">
+    <div class="stat-card primary">
+      <h3>{{ stats.nombreClasses }}</h3>
+      <p>Classes</p>
+      <div class="stat-icon">🏫</div>
+    </div>
+    <div class="stat-card success">
+      <h3>{{ stats.nombreEtudiants }}</h3>
+      <p>Étudiants</p>
+      <div class="stat-icon">👥</div>
+    </div>
+    <div class="stat-card warning">
+      <h3>{{ stats.seancesAujourdhui }}</h3>
+      <p>Séances aujourd'hui</p>
+      <div class="stat-icon">📅</div>
+    </div>
+    <div class="stat-card info">
+      <h3>{{ stats.devoisACorreger }}</h3>
+      <p>Devoirs à corriger</p>
+      <div class="stat-icon">📝</div>
+    </div>
+    <div class="stat-card accent">
+      <h3>{{ stats.moyenneGenerale }}</h3>
+      <p>Moyenne Générale</p>
+      <div class="stat-icon">📊</div>
+    </div>
+    <div class="stat-card secondary">
+      <h3>{{ stats.tauxPresenceMoyen }}%</h3>
+      <p>Présence Moyenne</p>
+      <div class="stat-icon">✅</div>
+    </div>
+  </div>
+
+  <!-- Today's Sessions -->
+  <div class="today-sessions-section">
+    <h2>Séances d'Aujourd'hui</h2>
+    <div class="sessions-grid">
+      <div class="session-card" *ngFor="let session of todaySessions" [ngClass]="getSessionTypeClass(session.type)">
+        <div class="session-header">
+          <h3>{{ session.matiere }}</h3>
+          <span class="session-type">{{ session.type }}</span>
+        </div>
+        
+        <div class="session-details">
+          <div class="detail-item">
+            <span class="label">Classe:</span>
+            <span class="value">{{ session.classe }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Horaire:</span>
+            <span class="value">{{ session.heureDebut }} - {{ session.heureFin }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Salle:</span>
+            <span class="value">{{ session.salle }}</span>
+          </div>
+        </div>
+
+        <div class="session-actions">
+          <button class="btn-small btn-primary" (click)="markPresence(session.id)">
+            ✅ Présences
+          </button>
+          <button class="btn-small btn-secondary" (click)="quickGrade(session.id)">
+            📝 Noter
+          </button>
+          <button class="btn-small btn-accent" (click)="navigateToSession(session.id)">
+            👁️ Détails
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Features Grid -->
+  <div class="features-section">
+    <h2>Fonctionnalités</h2>
+    <div class="features-grid">
+      <!-- Session Management -->
+      <div class="feature-card sessions" (click)="navigateTo('sessions')">
+        <div class="card-icon">📚</div>
+        <h3>Gestion des Séances</h3>
+        <p>Créez, modifiez et gérez vos séances de cours. Marquez les présences et organisez votre emploi du temps.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Gérer séances</button>
+          <button class="btn-secondary">Marquer présences</button>
+          <button class="btn-accent">Attribuer notes</button>
+        </div>
+      </div>
+
+      <!-- Pedagogical Tracking -->
+      <div class="feature-card pedagogical" (click)="navigateTo('pedagogical-tracking')">
+        <div class="card-icon">📊</div>
+        <h3>Suivi Pédagogique</h3>
+        <p>Consultez les profils de vos élèves, suivez leur progression et analysez leurs résultats.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Consulter profils</button>
+          <button class="btn-secondary">Suivre progression</button>
+          <button class="btn-accent">Analyser résultats</button>
+        </div>
+      </div>
+
+      <!-- Planning -->
+      <div class="feature-card planning" (click)="navigateTo('planning')">
+        <div class="card-icon">📅</div>
+        <h3>Planning</h3>
+        <p>Consultez votre calendrier, planifiez vos activités et gérez votre emploi du temps.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Consulter calendrier</button>
+          <button class="btn-secondary">Planifier activités</button>
+        </div>
+      </div>
+
+      <!-- Communication -->
+      <div class="feature-card communication" (click)="navigateTo('messages')">
+        <div class="card-icon">💬</div>
+        <h3>Communication</h3>
+        <p>Échangez avec les parents et les collègues. Envoyez des messages et des alertes.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Envoyer/Recevoir messages</button>
+          <button class="btn-secondary">Envoyer alertes</button>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="feature-card notifications" (click)="navigateTo('notifications')">
+        <div class="card-icon">🔔</div>
+        <h3>Notifications</h3>
+        <p>Recevez les notifications importantes et les alertes du système éducatif.</p>
+        <div class="card-actions">
+          <button class="btn-primary">Recevoir notifications</button>
+          <button class="btn-secondary">Envoyer alertes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Info Panels -->
+  <div class="quick-info-section">
+    <!-- Top Students -->
+    <div class="info-panel">
+      <h3>Meilleurs Élèves</h3>
+      <div class="students-list">
+        <div class="student-item" *ngFor="let student of topStudents; let i = index">
+          <div class="student-rank">{{ i + 1 }}</div>
+          <div class="student-avatar">{{ student.prenom.charAt(0) }}</div>
+          <div class="student-info">
+            <h4>{{ student.prenom }} {{ student.nom }}</h4>
+            <p>{{ student.classe }}</p>
+          </div>
+          <div class="student-stats">
+            <span class="moyenne" [ngClass]="getStudentGradeClass(student.moyenne)">
+              {{ student.moyenne }}
+            </span>
+            <span class="presence" [ngClass]="getPresenceClass(student.tauxPresence)">
+              {{ student.tauxPresence }}%
+            </span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-link" (click)="navigateTo('student-profiles')">Voir tous les profils</button>
+    </div>
+
+    <!-- Recent Messages -->
+    <div class="info-panel">
+      <h3>Messages Récents</h3>
+      <div class="message-list">
+        <div class="message-item" *ngFor="let message of recentMessages">
+          <div class="message-icon">
+            {{ message.type === 'parent' ? '👨‍👩‍👧‍👦' : '👤' }}
+          </div>
+          <div class="message-content">
+            <h4>{{ message.sujet }}</h4>
+            <p>{{ message.expediteur }}</p>
+            <small>{{ message.date | date:'short' }}</small>
+          </div>
+          <div class="message-status" *ngIf="!message.lu">•</div>
+        </div>
+      </div>
+      <button class="btn-link" (click)="navigateTo('messages')">Voir tous les messages</button>
+    </div>
+
+    <!-- Recent Notifications -->
+    <div class="info-panel">
+      <h3>Notifications Récentes</h3>
+      <div class="notification-list">
+        <div class="notification-item" *ngFor="let notification of recentNotifications" [ngClass]="notification.type">
+          <div class="notification-icon">{{ getNotificationIcon(notification.type) }}</div>
+          <div class="notification-content">
+            <h4>{{ notification.titre }}</h4>
+            <p>{{ notification.message }}</p>
+            <small>{{ notification.date | date:'short' }}</small>
+          </div>
+          <div class="notification-status" *ngIf="!notification.lu">•</div>
+        </div>
+      </div>
+      <button class="btn-link" (click)="navigateTo('notifications')">Voir toutes les notifications</button>
+    </div>
+  </div>
+</div>
