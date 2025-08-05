@@ -1,8 +1,17 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
 import { Event } from '../../../../services/student.service';
 
 @Component({
   selector: 'app-event-card',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatChipsModule
+  ],
   templateUrl: './event-card.component.html',
   styleUrls: ['./event-card.component.scss']
 })

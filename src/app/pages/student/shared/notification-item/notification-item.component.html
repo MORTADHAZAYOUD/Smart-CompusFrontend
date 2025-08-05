@@ -1,5 +1,5 @@
 <div class="notification-item" 
-     [ngClass]="{'compact': compact, 'unread': !notification.isRead, 'notification-' + notification.type}"
+     [ngClass]="getNotificationClasses()"
      (click)="onMarkAsRead()">
   
   <div class="notification-icon">

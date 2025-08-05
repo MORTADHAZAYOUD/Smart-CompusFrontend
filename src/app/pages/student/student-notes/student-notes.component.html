@@ -105,7 +105,8 @@
     <mat-card>
       <mat-card-content>
         <div class="table-container">
-          <table mat-table [dataSource]="getFilteredNotes() | async" class="notes-table">
+          <div *ngIf="getFilteredNotes() | async as filteredNotes">
+            <table mat-table [dataSource]="filteredNotes" class="notes-table">
             <!-- Date Column -->
             <ng-container matColumnDef="date">
               <th mat-header-cell *matHeaderCellDef 
@@ -212,6 +213,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="note-row"></tr>
           </table>
+          </div>
         </div>
         
         <div class="table-footer" *ngIf="(getFilteredNotes() | async)?.length === 0">
