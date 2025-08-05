@@ -44,6 +44,42 @@ export class StudentService {
         date: new Date('2024-01-10'),
         note: 14.0,
         coefficient: 1
+      },
+      {
+        id: 3,
+        matiere: 'Informatique',
+        enseignant: 'Prof. Bernard',
+        type: 'Projet',
+        date: new Date('2024-01-08'),
+        note: 18.0,
+        coefficient: 3
+      },
+      {
+        id: 4,
+        matiere: 'Anglais',
+        enseignant: 'Prof. Smith',
+        type: 'Contrôle',
+        date: new Date('2024-01-05'),
+        note: 13.5,
+        coefficient: 1
+      },
+      {
+        id: 5,
+        matiere: 'Mathématiques',
+        enseignant: 'Prof. Martin',
+        type: 'Devoir',
+        date: new Date('2024-01-03'),
+        note: 15.0,
+        coefficient: 1
+      },
+      {
+        id: 6,
+        matiere: 'Physique',
+        enseignant: 'Prof. Dubois',
+        type: 'Examen',
+        date: new Date('2023-12-20'),
+        note: 12.5,
+        coefficient: 2
       }
     ]);
   }

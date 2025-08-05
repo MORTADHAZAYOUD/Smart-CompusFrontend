@@ -1,1 +1,143 @@
-<p>messages works!</p>
+<!-- Messages Component -->
+<div class="messages-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Messagerie</h1>
+      <p>Communiquez avec vos enseignants et l'administration</p>
+    </div>
+    <button class="compose-btn" (click)="openComposeDialog()">
+      <span class="btn-icon">✉️</span>
+      Nouveau message
+    </button>
+  </div>
+
+  <!-- Messages Content -->
+  <div class="messages-content">
+    <!-- Sidebar -->
+    <div class="messages-sidebar">
+      <div class="folder-list">
+        <div class="folder-item" 
+             [class.active]="selectedFolder === 'inbox'"
+             (click)="selectFolder('inbox')">
+          <span class="folder-icon">📥</span>
+          <span class="folder-name">Boîte de réception</span>
+          <span *ngIf="unreadCount > 0" class="unread-badge">{{ unreadCount }}</span>
+        </div>
+        <div class="folder-item" 
+             [class.active]="selectedFolder === 'sent'"
+             (click)="selectFolder('sent')">
+          <span class="folder-icon">📤</span>
+          <span class="folder-name">Messages envoyés</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages List -->
+    <div class="messages-list">
+      <div class="list-header">
+        <h3>{{ getFolderTitle() }}</h3>
+        <div class="list-actions">
+          <button class="action-btn" (click)="markAllAsRead()">
+            Marquer tout lu
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Chargement des messages...</p>
+      </div>
+
+      <!-- Messages -->
+      <div *ngIf="!isLoading" class="message-items">
+        <div *ngIf="currentMessages.length === 0" class="empty-state">
+          <div class="empty-icon">💬</div>
+          <h3>Aucun message</h3>
+          <p>{{ selectedFolder === 'inbox' ? 'Vous n\'avez aucun message reçu.' : 'Vous n\'avez envoyé aucun message.' }}</p>
+        </div>
+
+        <div *ngFor="let message of currentMessages" 
+             class="message-item"
+             [class.unread]="!message.lu"
+             [class.selected]="selectedMessage?.id === message.id"
+             (click)="selectMessage(message)">
+          <div class="message-sender">
+            <div class="sender-info">
+              <span class="sender-name">{{ message.expediteur }}</span>
+              <span class="message-date">{{ formatDate(message.date) }}</span>
+            </div>
+            <div *ngIf="!message.lu" class="unread-indicator"></div>
+          </div>
+          <div class="message-subject">{{ message.sujet }}</div>
+          <div class="message-preview">{{ message.contenu | slice:0:100 }}...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message Detail -->
+    <div class="message-detail" *ngIf="selectedMessage">
+      <div class="detail-header">
+        <div class="message-info">
+          <h3>{{ selectedMessage.sujet }}</h3>
+          <div class="message-meta">
+            <span class="sender">De: {{ selectedMessage.expediteur }}</span>
+            <span class="date">{{ formatDate(selectedMessage.date) }}</span>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="action-btn" (click)="replyToMessage()">
+            Répondre
+          </button>
+          <button class="action-btn danger" (click)="deleteMessage()">
+            Supprimer
+          </button>
+        </div>
+      </div>
+      
+      <div class="message-content">
+        {{ selectedMessage.contenu }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Compose Dialog -->
+<div *ngIf="showComposeDialog" class="compose-overlay">
+  <div class="compose-dialog">
+    <div class="dialog-header">
+      <h3>Nouveau Message</h3>
+      <button class="close-btn" (click)="closeComposeDialog()">×</button>
+    </div>
+    
+    <form class="compose-form" (ngSubmit)="sendMessage()">
+      <div class="form-group">
+        <label>Destinataire:</label>
+        <select [(ngModel)]="newMessage.destinataire" name="destinataire" required>
+          <option value="">Sélectionner un destinataire</option>
+          <option *ngFor="let contact of contacts" [value]="contact">{{ contact }}</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Objet:</label>
+        <input type="text" [(ngModel)]="newMessage.sujet" name="sujet" required>
+      </div>
+      
+      <div class="form-group">
+        <label>Message:</label>
+        <textarea [(ngModel)]="newMessage.contenu" name="contenu" rows="8" required></textarea>
+      </div>
+      
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" (click)="closeComposeDialog()">
+          Annuler
+        </button>
+        <button type="submit" class="btn-primary">
+          Envoyer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,1 +1,162 @@
-<p>my-notes works!</p>
+<!-- My Notes Component -->
+<div class="notes-container">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Mes Notes</h1>
+      <p>Consultez vos résultats académiques et suivez votre progression</p>
+    </div>
+    <div class="notes-stats">
+      <div class="stat">
+        <span class="stat-value">{{ averageGrade }}/20</span>
+        <span class="stat-label">Moyenne</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{{ totalNotes }}</span>
+        <span class="stat-label">Notes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="search-filter">
+      <input 
+        type="text" 
+        placeholder="Rechercher par matière..." 
+        [(ngModel)]="searchTerm"
+        (input)="filterNotes()"
+        class="search-input">
+    </div>
+    <div class="filter-options">
+      <select [(ngModel)]="selectedSubject" (change)="filterNotes()" class="filter-select">
+        <option value="">Toutes les matières</option>
+        <option *ngFor="let subject of subjects" [value]="subject">{{ subject }}</option>
+      </select>
+      <select [(ngModel)]="selectedType" (change)="filterNotes()" class="filter-select">
+        <option value="">Tous les types</option>
+        <option value="Examen">Examens</option>
+        <option value="Devoir">Devoirs</option>
+        <option value="Contrôle">Contrôles</option>
+        <option value="Projet">Projets</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement de vos notes...</p>
+  </div>
+
+  <!-- Notes Content -->
+  <div *ngIf="!isLoading" class="notes-content">
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card excellent">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-info">
+          <h3>{{ getNotesCountByRange(16, 20) }}</h3>
+          <p>Excellentes (16-20)</p>
+        </div>
+      </div>
+      <div class="stat-card good">
+        <div class="stat-icon">👍</div>
+        <div class="stat-info">
+          <h3>{{ getNotesCountByRange(14, 15.99) }}</h3>
+          <p>Bonnes (14-16)</p>
+        </div>
+      </div>
+      <div class="stat-card average">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>{{ getNotesCountByRange(12, 13.99) }}</h3>
+          <p>Moyennes (12-14)</p>
+        </div>
+      </div>
+      <div class="stat-card low">
+        <div class="stat-icon">📉</div>
+        <div class="stat-info">
+          <h3>{{ getNotesCountByRange(0, 11.99) }}</h3>
+          <p>Faibles (<12)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes List -->
+    <div class="notes-list">
+      <div class="list-header">
+        <h3>Toutes les Notes</h3>
+        <div class="sort-options">
+          <label>Trier par:</label>
+          <select [(ngModel)]="sortBy" (change)="sortNotes()" class="sort-select">
+            <option value="date">Date</option>
+            <option value="matiere">Matière</option>
+            <option value="note">Note</option>
+            <option value="type">Type</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredNotes.length === 0" class="empty-state">
+        <div class="empty-icon">📊</div>
+        <h3>Aucune note trouvée</h3>
+        <p>{{ searchTerm || selectedSubject || selectedType ? 'Aucune note ne correspond à vos critères de recherche.' : 'Vous n\'avez pas encore de notes enregistrées.' }}</p>
+      </div>
+
+      <!-- Notes Table -->
+      <div *ngIf="filteredNotes.length > 0" class="notes-table">
+        <div class="table-header">
+          <div class="col-date">Date</div>
+          <div class="col-subject">Matière</div>
+          <div class="col-type">Type</div>
+          <div class="col-teacher">Enseignant</div>
+          <div class="col-grade">Note</div>
+          <div class="col-coefficient">Coef.</div>
+        </div>
+        <div class="table-body">
+          <div *ngFor="let note of filteredNotes" class="table-row" [class.recent]="isRecentNote(note.date)">
+            <div class="col-date">
+              <span class="date-day">{{ formatDate(note.date, 'day') }}</span>
+              <span class="date-month">{{ formatDate(note.date, 'month') }}</span>
+            </div>
+            <div class="col-subject">
+              <span class="subject-name">{{ note.matiere }}</span>
+            </div>
+            <div class="col-type">
+              <span class="type-badge" [class]="note.type.toLowerCase()">{{ note.type }}</span>
+            </div>
+            <div class="col-teacher">
+              <span class="teacher-name">{{ note.enseignant }}</span>
+            </div>
+            <div class="col-grade">
+              <span class="grade-value" [style.color]="getGradeColor(note.note)">
+                {{ note.note }}/20
+              </span>
+            </div>
+            <div class="col-coefficient">
+              <span class="coefficient">{{ note.coefficient }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subject Averages -->
+    <div class="subject-averages">
+      <h3>Moyennes par Matière</h3>
+      <div class="averages-grid">
+        <div *ngFor="let avg of subjectAverages" class="average-card">
+          <div class="subject-info">
+            <h4>{{ avg.subject }}</h4>
+            <p>{{ avg.count }} note(s)</p>
+          </div>
+          <div class="average-grade" [style.color]="getGradeColor(avg.average)">
+            {{ avg.average.toFixed(1) }}/20
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

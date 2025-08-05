@@ -1,75 +1,161 @@
-<!-- student-dashboard.component.html -->
+<!-- Student Dashboard -->
 <div class="dashboard-container">
-  <!-- Header -->
-  <div class="dashboard-header">
-    <h1>Tableau de Bord</h1>
-    <p>Bienvenue sur votre espace étudiant</p>
-    <div class="user-info">
-      <span>{{ studentName }}</span>
-      <span class="role">Étudiant</span>
-      <div class="notification-badge">1</div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Tableau de Bord</h1>
+      <p>Bienvenue sur votre espace étudiant</p>
+    </div>
+    <div class="header-date">
+      <span>{{ new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span>
     </div>
   </div>
 
-  <!-- Stats Cards -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <h3>{{ stats.moyenne }}</h3>
-      <p>Moyenne Générale</p>
-    </div>
-    <div class="stat-card">
-      <h3>{{ stats.tauxPresence }}%</h3>
-      <p>Taux de Présence</p>
-    </div>
-    <div class="stat-card">
-      <h3>{{ stats.coursSemaine }}</h3>
-      <p>Cours cette semaine</p>
-    </div>
-    <div class="stat-card">
-      <h3>{{ stats.devoirsRendre }}</h3>
-      <p>Devoirs à rendre</p>
-    </div>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Chargement de vos données...</p>
   </div>
 
-  <!-- Feature Cards -->
-  <div class="features-grid">
-    <div class="feature-card academic" (click)="navigateTo('my-notes')">
-      <div class="card-icon">📊</div>
-      <h3>Suivi Académique</h3>
-      <p>Consultez vos notes, présences et séances de cours. Suivez votre progression académique en temps réel.</p>
-      <div class="card-actions">
-        <button class="btn-primary">Voir les notes</button>
-        <button class="btn-secondary">Présences</button>
+  <!-- Dashboard Content -->
+  <div *ngIf="!isLoading" class="dashboard-content">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card moyenne">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <h3>{{ stats.moyenne }}/20</h3>
+          <p>Moyenne Générale</p>
+        </div>
+      </div>
+      <div class="stat-card presence">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <h3>{{ stats.tauxPresence }}%</h3>
+          <p>Taux de Présence</p>
+        </div>
+      </div>
+      <div class="stat-card cours">
+        <div class="stat-icon">📚</div>
+        <div class="stat-info">
+          <h3>{{ stats.coursSemaine }}</h3>
+          <p>Cours cette semaine</p>
+        </div>
+      </div>
+      <div class="stat-card devoirs">
+        <div class="stat-icon">📝</div>
+        <div class="stat-info">
+          <h3>{{ stats.devoirsRendre }}</h3>
+          <p>Devoirs à rendre</p>
+        </div>
       </div>
     </div>
 
-    <div class="feature-card planning" (click)="navigateTo('emploi-temps')">
-      <div class="card-icon">📅</div>
-      <h3>Planning</h3>
-      <p>Accédez à votre emploi du temps et consultez les événements à venir. Organisez votre semaine efficacement.</p>
-      <div class="card-actions">
-        <button class="btn-primary">Emploi du temps</button>
-        <button class="btn-secondary">Événements</button>
+    <!-- Content Grid -->
+    <div class="content-grid">
+      <!-- Recent Notes -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Dernières Notes</h3>
+          <button class="view-all-btn" (click)="navigateTo('my-notes')">Voir tout</button>
+        </div>
+        <div class="card-content">
+          <div *ngIf="recentNotes.length === 0" class="empty-state">
+            <span class="empty-icon">📊</span>
+            <p>Aucune note récente</p>
+          </div>
+          <div *ngFor="let note of recentNotes" class="note-item">
+            <div class="note-subject">{{ note.matiere }}</div>
+            <div class="note-details">
+              <span class="note-type">{{ note.type }}</span>
+              <span class="note-date">{{ formatDate(note.date) }}</span>
+            </div>
+            <div class="note-grade" [style.color]="getGradeColor(note.note)">
+              {{ note.note }}/20
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="feature-card communication" (click)="navigateTo('messages')">
-      <div class="card-icon">💬</div>
-      <h3>Communication</h3>
-      <p>Restez connecté avec vos professeurs et camarades. Consultez vos messages et notifications importantes.</p>
-      <div class="card-actions">
-        <button class="btn-primary">Messagerie</button>
-        <button class="btn-secondary">Notifications</button>
+      <!-- Upcoming Sessions -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Prochaines Séances</h3>
+          <button class="view-all-btn" (click)="navigateTo('emploi-temps')">Planning</button>
+        </div>
+        <div class="card-content">
+          <div *ngIf="upcomingSeances.length === 0" class="empty-state">
+            <span class="empty-icon">📅</span>
+            <p>Aucune séance programmée</p>
+          </div>
+          <div *ngFor="let seance of upcomingSeances" class="seance-item">
+            <div class="seance-time">{{ seance.heureDebut }}</div>
+            <div class="seance-info">
+              <div class="seance-subject">{{ seance.matiere }}</div>
+              <div class="seance-teacher">{{ seance.enseignant }}</div>
+              <div class="seance-location">{{ seance.salle }}</div>
+            </div>
+            <div class="seance-type">{{ seance.type }}</div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="feature-card profile" (click)="navigateTo('profil')">
-      <div class="card-icon">👤</div>
-      <h3>Profil Personnel</h3>
-      <p>Gérez vos informations personnelles et paramètres de compte. Maintenez vos données à jour.</p>
-      <div class="card-actions">
-        <button class="btn-primary">Voir profil</button>
-        <button class="btn-secondary">Modifier</button>
+      <!-- Recent Messages -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3>Messages Récents</h3>
+          <button class="view-all-btn" (click)="navigateTo('messages')">Messagerie</button>
+        </div>
+        <div class="card-content">
+          <div *ngIf="recentMessages.length === 0" class="empty-state">
+            <span class="empty-icon">💬</span>
+            <p>Aucun message récent</p>
+          </div>
+          <div *ngFor="let message of recentMessages" class="message-item">
+            <div class="message-header">
+              <span class="message-sender">{{ message.expediteur }}</span>
+              <span class="message-date">{{ formatDate(message.date) }}</span>
+            </div>
+            <div class="message-subject">{{ message.sujet }}</div>
+            <div class="message-preview">{{ message.contenu }}</div>
+            <div *ngIf="!message.lu" class="unread-indicator"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="content-card quick-actions">
+        <div class="card-header">
+          <h3>Actions Rapides</h3>
+        </div>
+        <div class="card-content">
+          <div class="action-grid">
+            <button class="action-btn" (click)="navigateTo('my-notes')">
+              <span class="action-icon">📊</span>
+              <span>Mes Notes</span>
+            </button>
+            <button class="action-btn" (click)="navigateTo('emploi-temps')">
+              <span class="action-icon">📅</span>
+              <span>Planning</span>
+            </button>
+            <button class="action-btn" (click)="navigateTo('my-seances')">
+              <span class="action-icon">📚</span>
+              <span>Séances</span>
+            </button>
+            <button class="action-btn" (click)="navigateTo('messages')">
+              <span class="action-icon">💬</span>
+              <span>Messages</span>
+            </button>
+            <button class="action-btn" (click)="navigateTo('notifications')">
+              <span class="action-icon">🔔</span>
+              <span>Notifications</span>
+            </button>
+            <button class="action-btn" (click)="navigateTo('profil')">
+              <span class="action-icon">👤</span>
+              <span>Mon Profil</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
