@@ -1,0 +1,205 @@
+<div class="dashboard-container" *ngIf="dashboardData$ | async as data">
+  <!-- Stats Overview -->
+  <div class="stats-section">
+    <h2 class="section-title">Overview</h2>
+    <div class="stats-grid">
+      <app-stat-card
+        title="Global Average"
+        [value]="data.stats.globalAverage"
+        suffix="/20"
+        icon="grade"
+        [color]="getGradeColor(data.stats.globalAverage, 20)"
+        [percentage]="(data.stats.globalAverage / 20) * 100">
+      </app-stat-card>
+      
+      <app-stat-card
+        title="Attendance Rate"
+        [value]="data.stats.attendanceRate"
+        suffix="%"
+        icon="how_to_reg"
+        [color]="getAttendanceColor(data.stats.attendanceRate)"
+        [percentage]="data.stats.attendanceRate">
+      </app-stat-card>
+      
+      <app-stat-card
+        title="Total Subjects"
+        [value]="data.stats.totalSubjects"
+        icon="book"
+        color="info">
+      </app-stat-card>
+      
+      <app-stat-card
+        title="Upcoming Exams"
+        [value]="data.stats.upcomingExams"
+        icon="quiz"
+        color="warning">
+      </app-stat-card>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <div class="charts-grid">
+      <!-- Performance Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>trending_up</mat-icon>
+            Performance by Subject
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ngx-charts-bar-vertical
+            [results]="data.performanceData"
+            [scheme]="performanceColorScheme"
+            [xAxis]="true"
+            [yAxis]="true"
+            [showXAxisLabel]="true"
+            [showYAxisLabel]="true"
+            xAxisLabel="Subjects"
+            yAxisLabel="Average Grade"
+            [barPadding]="8"
+            [roundDomains]="true"
+            [maxYAxisLength]="15">
+          </ngx-charts-bar-vertical>
+        </mat-card-content>
+      </mat-card>
+      
+      <!-- Attendance Chart -->
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>pie_chart</mat-icon>
+            Attendance Distribution
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <ngx-charts-pie-chart
+            [results]="data.attendanceData"
+            [scheme]="attendanceColorScheme"
+            [labels]="true"
+            [doughnut]="true"
+            [arcWidth]="0.4">
+          </ngx-charts-pie-chart>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="content-grid">
+    <!-- Recent Notes -->
+    <mat-card class="content-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>grade</mat-icon>
+          Recent Notes
+        </mat-card-title>
+        <div class="spacer"></div>
+        <a mat-button color="primary" routerLink="/student/notes">View All</a>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="notes-list" *ngIf="data.recentNotes.length > 0; else noNotes">
+          <div class="note-item" *ngFor="let note of data.recentNotes">
+            <div class="note-subject">
+              <span class="subject-name">{{note.subject}}</span>
+              <span class="exam-type">{{note.examType}}</span>
+            </div>
+            <div class="note-grade">
+              <span class="grade" [ngClass]="'grade-' + getGradeColor(note.grade, note.maxGrade)">
+                {{note.grade}}/{{note.maxGrade}}
+              </span>
+              <span class="date">{{formatDate(note.date)}}</span>
+            </div>
+          </div>
+        </div>
+        <ng-template #noNotes>
+          <div class="empty-state">
+            <mat-icon>grade</mat-icon>
+            <p>No recent notes available</p>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Upcoming Sessions -->
+    <mat-card class="content-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>schedule</mat-icon>
+          Upcoming Sessions
+        </mat-card-title>
+        <div class="spacer"></div>
+        <a mat-button color="primary" routerLink="/student/sessions">View All</a>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="sessions-list" *ngIf="data.upcomingSessions.length > 0; else noSessions">
+          <app-schedule-item 
+            *ngFor="let session of data.upcomingSessions"
+            [session]="session">
+          </app-schedule-item>
+        </div>
+        <ng-template #noSessions>
+          <div class="empty-state">
+            <mat-icon>schedule</mat-icon>
+            <p>No upcoming sessions</p>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Upcoming Events -->
+    <mat-card class="content-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>event</mat-icon>
+          Upcoming Events
+        </mat-card-title>
+        <div class="spacer"></div>
+        <a mat-button color="primary" routerLink="/student/events">View All</a>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="events-list" *ngIf="data.upcomingEvents.length > 0; else noEvents">
+          <app-event-card 
+            *ngFor="let event of data.upcomingEvents"
+            [event]="event"
+            [compact]="true">
+          </app-event-card>
+        </div>
+        <ng-template #noEvents>
+          <div class="empty-state">
+            <mat-icon>event</mat-icon>
+            <p>No upcoming events</p>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Recent Notifications -->
+    <mat-card class="content-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>notifications</mat-icon>
+          Recent Notifications
+        </mat-card-title>
+        <div class="spacer"></div>
+        <a mat-button color="primary" routerLink="/student/notifications">View All</a>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="notifications-list" *ngIf="data.recentNotifications.length > 0; else noNotifications">
+          <app-notification-item 
+            *ngFor="let notification of data.recentNotifications"
+            [notification]="notification"
+            [compact]="true">
+          </app-notification-item>
+        </div>
+        <ng-template #noNotifications>
+          <div class="empty-state">
+            <mat-icon>notifications</mat-icon>
+            <p>No recent notifications</p>
+          </div>
+        </ng-template>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

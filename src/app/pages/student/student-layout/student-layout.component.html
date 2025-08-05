@@ -1,0 +1,105 @@
+<mat-sidenav-container class="sidenav-container">
+  <!-- Sidebar Navigation -->
+  <mat-sidenav 
+    #drawer 
+    class="sidenav" 
+    fixedInViewport
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="(isHandset$ | async) === false">
+    
+    <!-- Sidebar Header -->
+    <div class="sidenav-header">
+      <div class="logo-container">
+        <mat-icon class="logo-icon">school</mat-icon>
+        <h2 class="logo-text">SmartCampus</h2>
+      </div>
+      
+      <!-- Student Info -->
+      <div class="student-info" *ngIf="currentStudent$ | async as student">
+        <div class="student-avatar">
+          <img [src]="student.profilePicture" [alt]="student.firstName + ' ' + student.lastName" />
+        </div>
+        <div class="student-details">
+          <h3>{{student.firstName}} {{student.lastName}}</h3>
+          <p>{{student.studentId}}</p>
+          <p class="student-program">{{student.program}} - Year {{student.year}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <mat-nav-list class="nav-list">
+      <a 
+        mat-list-item 
+        *ngFor="let item of navigationItems" 
+        [routerLink]="item.path"
+        routerLinkActive="active-link"
+        (click)="onNavigationClick()">
+        <mat-icon matListIcon>{{item.icon}}</mat-icon>
+        <span matLine>{{item.title}}</span>
+        <span *ngIf="item.badge" class="nav-badge" [matBadge]="item.badge" matBadgeColor="accent" matBadgeSize="small"></span>
+      </a>
+    </mat-nav-list>
+
+    <!-- Sidebar Footer -->
+    <div class="sidenav-footer">
+      <button mat-button class="logout-btn" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Content Area -->
+  <mat-sidenav-content>
+    <!-- Top Toolbar -->
+    <mat-toolbar class="toolbar" color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      
+      <span class="toolbar-title">{{currentPageTitle}}</span>
+      
+      <span class="toolbar-spacer"></span>
+      
+      <!-- Toolbar Actions -->
+      <div class="toolbar-actions">
+        <button mat-icon-button [routerLink]="'/student/notifications'">
+          <mat-icon matBadge="2" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
+        </button>
+        
+        <button mat-icon-button [routerLink]="'/student/messages'">
+          <mat-icon matBadge="5" matBadgeColor="accent" matBadgeSize="small">message</mat-icon>
+        </button>
+        
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
+    </mat-toolbar>
+
+    <!-- User Menu -->
+    <mat-menu #userMenu="matMenu">
+      <a mat-menu-item [routerLink]="'/student/profile'">
+        <mat-icon>person</mat-icon>
+        <span>My Profile</span>
+      </a>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+
+    <!-- Page Content -->
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

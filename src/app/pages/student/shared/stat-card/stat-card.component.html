@@ -1,0 +1,29 @@
+<mat-card class="stat-card" [ngClass]="getColorClass()">
+  <mat-card-content>
+    <div class="stat-header">
+      <div class="stat-icon">
+        <mat-icon>{{icon}}</mat-icon>
+      </div>
+      <div class="stat-trend" *ngIf="trend && trendValue">
+        <mat-icon [ngClass]="getTrendClass()">{{getTrendIcon()}}</mat-icon>
+        <span>{{trendValue}}%</span>
+      </div>
+    </div>
+    
+    <div class="stat-content">
+      <div class="stat-value">
+        <span class="value">{{value}}</span>
+        <span class="suffix" *ngIf="suffix">{{suffix}}</span>
+      </div>
+      <div class="stat-title">{{title}}</div>
+    </div>
+    
+    <div class="stat-progress" *ngIf="percentage !== undefined">
+      <mat-progress-bar 
+        mode="determinate" 
+        [value]="percentage"
+        [ngClass]="'progress-' + color">
+      </mat-progress-bar>
+    </div>
+  </mat-card-content>
+</mat-card>

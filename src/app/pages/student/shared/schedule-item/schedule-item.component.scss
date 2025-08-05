@@ -1,0 +1,154 @@
+.schedule-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+  }
+  
+  &.compact {
+    padding: 12px;
+    
+    .session-content {
+      .session-details {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        
+        > div {
+          margin-bottom: 0;
+        }
+      }
+    }
+    
+    .session-date {
+      .date-text {
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.session-icon {
+  margin-right: 16px;
+  margin-top: 4px;
+  
+  .mat-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+.session-content {
+  flex: 1;
+}
+
+.session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  
+  .session-subject {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .mat-chip {
+    font-size: 12px;
+    height: 24px;
+    line-height: 24px;
+  }
+}
+
+.session-details {
+  > div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #666;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    .mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      color: #999;
+    }
+  }
+}
+
+.session-description {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+  }
+}
+
+.session-date {
+  margin-left: 16px;
+  text-align: right;
+  
+  .date-text {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 4px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+}
+
+// Mobile responsive
+@media (max-width: 768px) {
+  .schedule-item {
+    flex-direction: column;
+    
+    .session-icon {
+      margin-right: 0;
+      margin-bottom: 8px;
+      align-self: flex-start;
+    }
+    
+    .session-date {
+      margin-left: 0;
+      margin-top: 12px;
+      text-align: left;
+    }
+    
+    .session-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    
+    &.compact {
+      .session-details {
+        flex-direction: column;
+        gap: 8px;
+      }
+    }
+  }
+}
