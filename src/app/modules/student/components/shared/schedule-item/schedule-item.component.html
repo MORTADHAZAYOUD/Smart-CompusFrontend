@@ -1,0 +1,41 @@
+<div class="schedule-item" [ngClass]="{'compact': compact}">
+  <div class="session-icon">
+    <mat-icon [color]="getSessionTypeColor(session.sessionType)">
+      {{getSessionTypeIcon(session.sessionType)}}
+    </mat-icon>
+  </div>
+  
+  <div class="session-content">
+    <div class="session-header">
+      <h4 class="session-subject">{{session.subject}}</h4>
+      <mat-chip [color]="getSessionTypeColor(session.sessionType)" selected>
+        {{session.sessionType}}
+      </mat-chip>
+    </div>
+    
+    <div class="session-details">
+      <div class="session-time">
+        <mat-icon>access_time</mat-icon>
+        <span>{{formatTime(session.startTime)}} - {{formatTime(session.endTime)}}</span>
+      </div>
+      
+      <div class="session-location">
+        <mat-icon>location_on</mat-icon>
+        <span>{{session.room}}</span>
+      </div>
+      
+      <div class="session-teacher">
+        <mat-icon>person</mat-icon>
+        <span>{{session.teacher}}</span>
+      </div>
+    </div>
+    
+    <div class="session-description" *ngIf="session.description && !compact">
+      <p>{{session.description}}</p>
+    </div>
+  </div>
+  
+  <div class="session-date">
+    <span class="date-text">{{formatDate(session.date)}}</span>
+  </div>
+</div>
