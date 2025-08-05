@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { StatCardComponent } from '../shared/stat-card/stat-card.component';
+import { ScheduleItemComponent } from '../shared/schedule-item/schedule-item.component';
+import { EventCardComponent } from '../shared/event-card/event-card.component';
+import { NotificationItemComponent } from '../shared/notification-item/notification-item.component';
 import { 
   StudentService, 
   DashboardStats, 
@@ -22,6 +30,17 @@ interface DashboardData {
 
 @Component({
   selector: 'app-student-dashboard',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatIconModule,
+    NgxChartsModule,
+    StatCardComponent,
+    ScheduleItemComponent,
+    EventCardComponent,
+    NotificationItemComponent
+  ],
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.scss']
 })
@@ -29,13 +48,9 @@ export class StudentDashboardComponent implements OnInit {
   dashboardData$: Observable<DashboardData>;
   
   // Chart options
-  performanceColorScheme = {
-    domain: ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe']
-  };
+  performanceColorScheme = 'cool';
   
-  attendanceColorScheme = {
-    domain: ['#00d4aa', '#ff6b6b', '#feca57', '#48dbfb']
-  };
+  attendanceColorScheme = 'vivid';
 
   constructor(private studentService: StudentService) {
     this.dashboardData$ = this.loadDashboardData();
@@ -65,14 +80,14 @@ export class StudentDashboardComponent implements OnInit {
     );
   }
 
-  getGradeColor(grade: number, maxGrade: number): string {
+  getGradeColor(grade: number, maxGrade: number): 'success' | 'warning' | 'danger' | 'info' | 'primary' {
     const percentage = (grade / maxGrade) * 100;
     if (percentage >= 80) return 'success';
     if (percentage >= 60) return 'warning';
     return 'danger';
   }
 
-  getAttendanceColor(rate: number): string {
+  getAttendanceColor(rate: number): 'success' | 'warning' | 'danger' | 'info' | 'primary' {
     if (rate >= 90) return 'success';
     if (rate >= 75) return 'warning';
     return 'danger';

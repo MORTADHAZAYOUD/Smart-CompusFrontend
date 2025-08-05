@@ -1,6 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { StatCardComponent } from '../shared/stat-card/stat-card.component';
 import { StudentService, Note } from '../../../services/student.service';
 
 interface SubjectSummary {
@@ -14,6 +26,21 @@ interface SubjectSummary {
 
 @Component({
   selector: 'app-student-notes',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatTableModule,
+    MatChipsModule,
+    MatTooltipModule,
+    NgxChartsModule,
+    StatCardComponent
+  ],
   templateUrl: './student-notes.component.html',
   styleUrls: ['./student-notes.component.scss']
 })
@@ -89,6 +116,8 @@ export class StudentNotesComponent implements OnInit {
   getFilteredNotes(): Observable<Note[]> {
     return combineLatest([this.notes$, this.subjectSummaries$]).pipe(
       map(([notes, summaries]) => {
+        if (!notes) return [];
+        
         let filteredNotes = notes;
         
         // Filter by subject
@@ -134,7 +163,7 @@ export class StudentNotesComponent implements OnInit {
     }
   }
 
-  getGradeColor(grade: number, maxGrade: number): string {
+  getGradeColor(grade: number, maxGrade: number): 'success' | 'warning' | 'danger' | 'info' | 'primary' {
     const percentage = (grade / maxGrade) * 100;
     if (percentage >= 80) return 'success';
     if (percentage >= 60) return 'warning';
