@@ -1,0 +1,320 @@
+// Color Variables - School Theme
+$primary-color: #1976d2;
+$accent-color: #ff9800;
+$warn-color: #f44336;
+$success-color: #4caf50;
+$background-color: #f5f5f5;
+$surface-color: #ffffff;
+$text-primary: #212121;
+$text-secondary: #757575;
+
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 280px;
+  background-color: $surface-color;
+  border-right: 1px solid #e0e0e0;
+
+  .sidenav-header {
+    padding: 24px 16px;
+    background: linear-gradient(135deg, $primary-color 0%, #1565c0 100%);
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .logo-icon {
+        font-size: 32px;
+        margin-right: 12px;
+      }
+
+      .logo-text {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .teacher-info {
+      display: flex;
+      align-items: center;
+
+      .teacher-avatar {
+        margin-right: 12px;
+
+        mat-icon {
+          font-size: 40px;
+          width: 40px;
+          height: 40px;
+          opacity: 0.9;
+        }
+      }
+
+      .teacher-details {
+        display: flex;
+        flex-direction: column;
+
+        .teacher-name {
+          font-size: 16px;
+          font-weight: 500;
+          margin-bottom: 2px;
+        }
+
+        .teacher-role {
+          font-size: 12px;
+          opacity: 0.8;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+  }
+
+  .nav-list {
+    padding: 16px 0;
+
+    mat-list-item {
+      height: 48px;
+      margin: 4px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: $text-primary;
+
+      &:hover {
+        background-color: rgba($primary-color, 0.08);
+      }
+
+      &.active {
+        background-color: rgba($primary-color, 0.12);
+        color: $primary-color;
+        font-weight: 500;
+
+        mat-icon {
+          color: $primary-color;
+        }
+      }
+
+      mat-icon {
+        color: $text-secondary;
+        margin-right: 12px;
+      }
+
+      .mdc-list-item__primary-text {
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .sidenav-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 16px 0;
+    border-top: 1px solid #e0e0e0;
+    background-color: $surface-color;
+
+    mat-list-item {
+      height: 40px;
+      margin: 2px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: $text-secondary;
+      font-size: 13px;
+
+      &:hover {
+        background-color: rgba($text-secondary, 0.08);
+      }
+
+      mat-icon {
+        font-size: 20px;
+        color: $text-secondary;
+      }
+    }
+  }
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .toolbar-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 16px;
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  button {
+    margin-left: 8px;
+  }
+}
+
+.main-content {
+  padding: 24px;
+  background-color: $background-color;
+  min-height: calc(100vh - 64px);
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+// Menu Styles
+.notification-menu {
+  width: 320px;
+  max-height: 400px;
+
+  .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: $background-color;
+    font-weight: 500;
+
+    button {
+      font-size: 12px;
+      color: $primary-color;
+    }
+  }
+
+  .notification-list {
+    max-height: 300px;
+    overflow-y: auto;
+
+    .no-notifications {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px;
+      color: $text-secondary;
+
+      mat-icon {
+        font-size: 48px;
+        margin-bottom: 8px;
+        opacity: 0.5;
+      }
+
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .sidenav {
+    width: 260px;
+
+    .sidenav-header {
+      padding: 20px 16px;
+
+      .logo-container {
+        margin-bottom: 20px;
+
+        .logo-icon {
+          font-size: 28px;
+        }
+
+        .logo-text {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .toolbar {
+    .toolbar-title {
+      font-size: 16px;
+      margin-left: 8px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .sidenav {
+    width: 240px;
+  }
+
+  .main-content {
+    padding: 12px;
+  }
+}
+
+// Animation Classes
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Badge Customization
+.mat-badge-content {
+  background-color: $warn-color !important;
+  color: white !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+}
+
+// List Item Customization
+.mat-mdc-list-item {
+  --mdc-list-list-item-container-height: 48px;
+  
+  &.active {
+    --mdc-list-list-item-container-color: rgba(25, 118, 210, 0.12);
+  }
+}
+
+// Scrollbar Styling
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
