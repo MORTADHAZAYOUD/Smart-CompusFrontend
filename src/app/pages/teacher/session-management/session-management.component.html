@@ -1,0 +1,189 @@
+<div class="session-management">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>Gestion des Séances</h1>
+      <p>Organisez et gérez vos cours et séances d'enseignement</p>
+    </div>
+    <button class="create-btn" (click)="openCreateModal()">
+      <span class="btn-icon">➕</span>
+      Nouvelle Séance
+    </button>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="controls-section">
+    <div class="search-container">
+      <input type="text" 
+             placeholder="Rechercher par matière, classe ou salle..." 
+             [(ngModel)]="searchTerm"
+             (input)="onSearchChange()"
+             class="search-input">
+      <span class="search-icon">🔍</span>
+    </div>
+    
+    <div class="filter-container">
+      <select [(ngModel)]="filterStatus" (change)="onFilterChange()" class="filter-select">
+        <option value="all">Tous les statuts</option>
+        <option value="scheduled">Programmées</option>
+        <option value="ongoing">En cours</option>
+        <option value="completed">Terminées</option>
+        <option value="cancelled">Annulées</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Sessions Grid -->
+  <div class="sessions-grid">
+    <div class="session-card" 
+         *ngFor="let session of filteredSessions"
+         [class]="'status-' + session.status">
+      
+      <div class="session-header">
+        <div class="session-info">
+          <h3>{{session.subject}}</h3>
+          <span class="class-name">{{session.class}}</span>
+        </div>
+        <div class="session-status" [class]="'status-' + getStatusColor(session.status)">
+          <span class="status-icon">{{getStatusIcon(session.status)}}</span>
+          <span class="status-text">{{session.status | titlecase}}</span>
+        </div>
+      </div>
+      
+      <div class="session-details">
+        <div class="detail-item">
+          <span class="detail-icon">📅</span>
+          <span>{{session.date | date:'dd/MM/yyyy'}}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-icon">⏰</span>
+          <span>{{session.startTime}} - {{session.endTime}}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-icon">📍</span>
+          <span>{{session.room}}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-icon">👥</span>
+          <span>{{session.studentsCount}} étudiants</span>
+        </div>
+      </div>
+      
+      <div class="session-progress">
+        <div class="progress-item" [class.completed]="session.attendanceMarked">
+          <span class="progress-icon">{{session.attendanceMarked ? '✅' : '⏳'}}</span>
+          <span>Présences</span>
+        </div>
+        <div class="progress-item" [class.completed]="session.gradesAssigned">
+          <span class="progress-icon">{{session.gradesAssigned ? '✅' : '⏳'}}</span>
+          <span>Notes</span>
+        </div>
+      </div>
+      
+      <div class="session-actions">
+        <button *ngIf="session.status === 'scheduled'" 
+                class="action-btn primary"
+                (click)="startSession(session)">
+          <span class="btn-icon">▶️</span>
+          Démarrer
+        </button>
+        
+        <button *ngIf="session.status === 'ongoing'" 
+                class="action-btn success"
+                (click)="endSession(session)">
+          <span class="btn-icon">⏹️</span>
+          Terminer
+        </button>
+        
+        <button *ngIf="session.status === 'ongoing' || session.status === 'completed'" 
+                class="action-btn secondary"
+                (click)="markAttendance(session)">
+          <span class="btn-icon">✅</span>
+          Présences
+        </button>
+        
+        <button *ngIf="session.status === 'completed'" 
+                class="action-btn warning"
+                (click)="assignGrades(session)">
+          <span class="btn-icon">🎯</span>
+          Notes
+        </button>
+        
+        <div class="more-actions">
+          <button class="action-btn ghost" (click)="editSession(session)">
+            <span class="btn-icon">✏️</span>
+          </button>
+          <button class="action-btn ghost danger" (click)="deleteSession(session)">
+            <span class="btn-icon">🗑️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="filteredSessions.length === 0">
+    <div class="empty-icon">📚</div>
+    <h3>Aucune séance trouvée</h3>
+    <p>Commencez par créer votre première séance d'enseignement</p>
+    <button class="create-btn" (click)="openCreateModal()">
+      <span class="btn-icon">➕</span>
+      Créer une séance
+    </button>
+  </div>
+</div>
+
+<!-- Create Session Modal -->
+<div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Créer une nouvelle séance</h2>
+      <button class="close-btn" (click)="closeCreateModal()">✕</button>
+    </div>
+    
+    <form class="session-form" (ngSubmit)="createSession()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Matière</label>
+          <input type="text" [(ngModel)]="newSession.subject" name="subject" required>
+        </div>
+        <div class="form-group">
+          <label>Classe</label>
+          <input type="text" [(ngModel)]="newSession.class" name="class" required>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="newSession.date" name="date" required>
+        </div>
+        <div class="form-group">
+          <label>Salle</label>
+          <input type="text" [(ngModel)]="newSession.room" name="room" required>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Heure de début</label>
+          <input type="time" [(ngModel)]="newSession.startTime" name="startTime" required>
+        </div>
+        <div class="form-group">
+          <label>Heure de fin</label>
+          <input type="time" [(ngModel)]="newSession.endTime" name="endTime" required>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Nombre d'étudiants</label>
+        <input type="number" [(ngModel)]="newSession.studentsCount" name="studentsCount" min="1" required>
+      </div>
+      
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" (click)="closeCreateModal()">Annuler</button>
+        <button type="submit" class="btn primary" [disabled]="!isValidSession()">Créer la séance</button>
+      </div>
+    </form>
+  </div>
+</div>

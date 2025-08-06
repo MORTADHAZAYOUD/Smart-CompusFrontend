@@ -20,8 +20,10 @@ export const routes: Routes = [
     {
         path: 'student',
         loadChildren: () => import('./pages/student/student.module').then(m => m.StudentModule)
-
-
+    },
+    {
+        path: 'teacher',
+        loadChildren: () => import('./pages/teacher/teacher.module').then(m => m.TeacherModule)
     }
 
 ];

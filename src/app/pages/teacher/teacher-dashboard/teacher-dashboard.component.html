@@ -1,0 +1,156 @@
+<div class="teacher-dashboard">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <div class="welcome-content">
+      <h1>Bonjour, Prof. Enseignant 👋</h1>
+      <p>Voici un aperçu de votre activité d'enseignement</p>
+      <div class="current-date">
+        <span class="date-icon">📅</span>
+        <span>{{currentDate | date:'EEEE d MMMM yyyy':'fr'}}</span>
+      </div>
+    </div>
+    <div class="welcome-actions">
+      <button class="action-btn primary" (click)="navigateToSessions()">
+        <span class="btn-icon">📚</span>
+        Nouvelle Séance
+      </button>
+      <button class="action-btn secondary" (click)="navigateToMessages()">
+        <span class="btn-icon">💬</span>
+        Messages
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card students">
+      <div class="stat-icon">👥</div>
+      <div class="stat-content">
+        <h3>{{stats.totalStudents}}</h3>
+        <p>Étudiants Total</p>
+      </div>
+      <div class="stat-trend positive">+5%</div>
+    </div>
+    
+    <div class="stat-card sessions">
+      <div class="stat-icon">📚</div>
+      <div class="stat-content">
+        <h3>{{stats.totalSessions}}</h3>
+        <p>Séances Total</p>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+        </div>
+        <small>{{stats.completedSessions}}/{{stats.totalSessions}} terminées</small>
+      </div>
+    </div>
+    
+    <div class="stat-card grades">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <h3>{{stats.pendingGrades}}</h3>
+        <p>Notes en Attente</p>
+      </div>
+      <div class="stat-action" (click)="navigateToGrades()">
+        <span>Corriger</span>
+      </div>
+    </div>
+    
+    <div class="stat-card today">
+      <div class="stat-icon">📅</div>
+      <div class="stat-content">
+        <h3>{{stats.todaySessions}}</h3>
+        <p>Séances Aujourd'hui</p>
+      </div>
+      <div class="stat-trend neutral">Planifié</div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Recent Activities -->
+    <div class="content-card activities-card">
+      <div class="card-header">
+        <h2>Activités Récentes</h2>
+        <button class="view-all-btn">Voir tout</button>
+      </div>
+      <div class="activities-list">
+        <div class="activity-item" *ngFor="let activity of recentActivities">
+          <div class="activity-icon">{{activity.icon}}</div>
+          <div class="activity-content">
+            <h4>{{activity.title}}</h4>
+            <p>{{activity.description}}</p>
+            <span class="activity-time">Il y a {{activity.time}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Sessions -->
+    <div class="content-card sessions-card">
+      <div class="card-header">
+        <h2>Prochaines Séances</h2>
+        <button class="add-session-btn">+ Ajouter</button>
+      </div>
+      <div class="sessions-list">
+        <div class="session-item" *ngFor="let session of upcomingSessions">
+          <div class="session-time">
+            <span class="time">{{session.time}}</span>
+            <span class="duration">{{session.duration}}</span>
+          </div>
+          <div class="session-details">
+            <h4>{{session.subject}}</h4>
+            <div class="session-info">
+              <span class="room">📍 {{session.room}}</span>
+              <span class="students">👥 {{session.studentsCount}} étudiants</span>
+            </div>
+          </div>
+          <div class="session-actions">
+            <button class="session-btn">Démarrer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2>Actions Rapides</h2>
+    <div class="actions-grid">
+      <div class="quick-action-card" (click)="navigateToSessions()">
+        <div class="action-icon">📝</div>
+        <h3>Gérer Séances</h3>
+        <p>Créer, modifier et organiser vos séances</p>
+      </div>
+      
+      <div class="quick-action-card">
+        <div class="action-icon">✅</div>
+        <h3>Marquer Présences</h3>
+        <p>Enregistrer les présences des étudiants</p>
+      </div>
+      
+      <div class="quick-action-card">
+        <div class="action-icon">🎯</div>
+        <h3>Attribuer Notes</h3>
+        <p>Évaluer et noter les travaux</p>
+      </div>
+      
+      <div class="quick-action-card">
+        <div class="action-icon">📊</div>
+        <h3>Analyser Résultats</h3>
+        <p>Consulter les statistiques de performance</p>
+      </div>
+      
+      <div class="quick-action-card">
+        <div class="action-icon">📅</div>
+        <h3>Planifier Activités</h3>
+        <p>Organiser le calendrier des cours</p>
+      </div>
+      
+      <div class="quick-action-card">
+        <div class="action-icon">💬</div>
+        <h3>Communication</h3>
+        <p>Échanger avec les étudiants et collègues</p>
+      </div>
+    </div>
+  </div>
+</div>
