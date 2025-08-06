@@ -1,0 +1,117 @@
+<div class="messages-container">
+  <!-- Header -->
+  <div class="messages-header">
+    <h1>💬 Messages</h1>
+    <p>Communiquez avec les enseignants et l'administration</p>
+  </div>
+
+  <!-- Chat Interface -->
+  <div class="chat-interface">
+    <!-- Conversations List -->
+    <div class="conversations-panel">
+      <div class="conversations-header">
+        <h2>Conversations</h2>
+      </div>
+      
+      <div class="conversations-list">
+        <div class="conversation-item" 
+             *ngFor="let conversation of conversations"
+             [class.active]="selectedConversation?.id === conversation.id"
+             (click)="selectConversation(conversation)">
+          <div class="conversation-avatar">
+            <span class="avatar-icon">{{ getRoleIcon(conversation.participantRole) }}</span>
+          </div>
+          
+          <div class="conversation-info">
+            <div class="conversation-name">{{ conversation.participantName }}</div>
+            <div class="conversation-preview">{{ conversation.lastMessage }}</div>
+          </div>
+          
+          <div class="conversation-meta">
+            <div class="conversation-time">{{ formatDate(conversation.lastMessageTime) }}</div>
+            <div class="unread-badge" *ngIf="conversation.unreadCount > 0">
+              {{ conversation.unreadCount }}
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="conversations.length === 0" class="no-conversations">
+          <div class="no-conversations-icon">💬</div>
+          <p>Aucune conversation</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area" *ngIf="selectedConversation">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-participant">
+          <div class="participant-avatar">
+            <span class="avatar-icon">{{ getRoleIcon(selectedConversation.participantRole) }}</span>
+          </div>
+          <div class="participant-info">
+            <h3>{{ selectedConversation.participantName }}</h3>
+            <span class="participant-role">
+              {{ selectedConversation.participantRole === 'teacher' ? 'Enseignant' : 'Administration' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages-area" #messagesContainer>
+        <div class="message" 
+             *ngFor="let message of selectedConversation.messages"
+             [class.own-message]="message.senderId === currentUser.id"
+             [class.other-message]="message.senderId !== currentUser.id">
+          
+          <div class="message-avatar" *ngIf="message.senderId !== currentUser.id">
+            <span class="avatar-icon">{{ getRoleIcon(message.senderRole) }}</span>
+          </div>
+          
+          <div class="message-content">
+            <div class="message-bubble">
+              <p>{{ message.content }}</p>
+            </div>
+            <div class="message-time">
+              {{ formatTime(message.timestamp) }}
+            </div>
+          </div>
+          
+          <div class="message-avatar" *ngIf="message.senderId === currentUser.id">
+            <span class="avatar-icon">{{ getRoleIcon(message.senderRole) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message Input -->
+      <div class="message-input-area">
+        <div class="input-container">
+          <textarea 
+            [(ngModel)]="newMessage"
+            (keydown)="onKeyPress($event)"
+            placeholder="Tapez votre message..."
+            class="message-input"
+            rows="2"
+          ></textarea>
+          <button 
+            class="send-button" 
+            (click)="sendMessage()"
+            [disabled]="!newMessage.trim()"
+          >
+            <span class="send-icon">📤</span>
+            Envoyer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Conversation Selected -->
+    <div class="no-chat-selected" *ngIf="!selectedConversation">
+      <div class="no-chat-icon">💬</div>
+      <h3>Sélectionnez une conversation</h3>
+      <p>Choisissez une conversation dans la liste pour commencer à échanger</p>
+    </div>
+  </div>
+</div>
