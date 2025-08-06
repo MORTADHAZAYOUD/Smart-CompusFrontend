@@ -237,6 +237,16 @@ export class StudentService {
     return of(true).pipe(delay(200));
   }
 
+  markAllNotificationsAsRead(): Observable<boolean> {
+    return of(true).pipe(delay(300));
+  }
+
+  getUnreadNotifications(): Observable<Notification[]> {
+    return this.getNotifications().pipe(
+      map(notifications => notifications.filter(n => !n.isRead))
+    );
+  }
+
   sendMessage(recipientId: number, subject: string, content: string): Observable<boolean> {
     return of(true).pipe(delay(500));
   }
