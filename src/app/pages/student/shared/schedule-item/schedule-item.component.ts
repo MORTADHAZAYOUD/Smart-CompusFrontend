@@ -1,8 +1,17 @@
 import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
 import { Session } from '../../../../services/student.service';
 
 @Component({
   selector: 'app-schedule-item',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatChipsModule
+  ],
   templateUrl: './schedule-item.component.html',
   styleUrls: ['./schedule-item.component.scss']
 })

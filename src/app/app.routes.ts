@@ -17,32 +17,11 @@ export const routes: Routes = [
         path: 'admin',
         loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule)
     },
-      {
-        path: '',
-        component: StudentLayoutComponent,
-        children: [
-          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-          { 
-            path: 'dashboard', 
-            component: StudentDashboardComponent,
-            data: { title: 'Dashboard', icon: 'dashboard' }
-          },
-          { 
-            path: 'profile', 
-            component: StudentProfileComponent,
-            data: { title: 'My Profile', icon: 'person' }
-          },
-          { 
-            path: 'notes', 
-            component: StudentNotesComponent,
-            data: { title: 'My Notes', icon: 'grade' }
-          },
-          { 
-            path: 'notifications', 
-            component: NotificationItemComponent,
-            data: { title: 'Notifications', icon: 'notifications' }
-          }
-        ]
-      }
+    {
+        path: 'student',
+        loadChildren: () => import('./pages/student/student.module').then(m => m.StudentModule)
+
+
+    }
 
 ];

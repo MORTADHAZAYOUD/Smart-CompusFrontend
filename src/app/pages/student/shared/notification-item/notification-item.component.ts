@@ -1,8 +1,17 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { Notification } from '../../../../services/student.service';
 
 @Component({
   selector: 'app-notification-item',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatButtonModule
+  ],
   templateUrl: './notification-item.component.html',
   styleUrls: ['./notification-item.component.scss']
 })
@@ -64,5 +73,13 @@ export class NotificationItemComponent {
     if (this.notification.actionUrl) {
       this.actionClicked.emit(this.notification.actionUrl);
     }
+  }
+
+  getNotificationClasses(): any {
+    return {
+      'compact': this.compact,
+      'unread': !this.notification.isRead,
+      [`notification-${this.notification.type}`]: true
+    };
   }
 }
