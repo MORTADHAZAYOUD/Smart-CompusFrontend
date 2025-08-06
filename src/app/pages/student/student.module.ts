@@ -43,15 +43,8 @@ import { StudentRoutingModule } from './student-routing.module';
 
 @NgModule({
   declarations: [
-
   ],
   imports: [
-    StudentLayoutComponent,
-    StudentDashboardComponent,
-    StatCardComponent,
-    NotificationItemComponent,
-    ScheduleItemComponent,
-    EventCardComponent,
     CommonModule,
     RouterModule,
     FormsModule,

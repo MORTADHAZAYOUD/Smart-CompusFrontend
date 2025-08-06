@@ -1,0 +1,77 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1>
+        <mat-icon>notifications</mat-icon>
+        Notifications
+      </h1>
+      <p>Stay updated with important announcements and messages</p>
+    </div>
+    
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="markAllAsRead()" [disabled]="unreadCount === 0">
+        <mat-icon>done_all</mat-icon>
+        Mark All as Read
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="notifications-container">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>inbox</mat-icon>
+        Your Notifications
+        <span class="unread-badge" *ngIf="unreadCount > 0" [matBadge]="unreadCount" matBadgeColor="warn">
+        </span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-tab-group>
+        <mat-tab label="All Notifications">
+          <div class="notifications-list">
+            <div *ngFor="let notification of getAllNotifications() | async; trackBy: trackByNotificationId" 
+                 class="notification-wrapper">
+              <app-notification-item 
+                [notification]="notification"
+                [compact]="false"
+                (markAsRead)="onMarkAsRead($event)"
+                (actionClicked)="onActionClicked($event)">
+              </app-notification-item>
+            </div>
+            
+            <div class="empty-state" *ngIf="(getAllNotifications() | async)?.length === 0">
+              <div class="empty-icon">
+                <mat-icon>notifications_none</mat-icon>
+              </div>
+              <h3>No notifications yet</h3>
+              <p>You'll see important updates and messages here.</p>
+            </div>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Unread" [disabled]="unreadCount === 0">
+          <div class="notifications-list">
+            <div *ngFor="let notification of getUnreadNotifications() | async; trackBy: trackByNotificationId" 
+                 class="notification-wrapper">
+              <app-notification-item 
+                [notification]="notification"
+                [compact]="false"
+                (markAsRead)="onMarkAsRead($event)"
+                (actionClicked)="onActionClicked($event)">
+              </app-notification-item>
+            </div>
+            
+            <div class="empty-state" *ngIf="unreadCount === 0">
+              <div class="empty-icon">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+              <h3>All caught up!</h3>
+              <p>You have no unread notifications.</p>
+            </div>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -5,7 +5,7 @@ import { StudentLayoutComponent } from './student-layout/student-layout.componen
 import { StudentDashboardComponent } from './student-dashboard/student-dashboard.component';
 import { StudentProfileComponent } from './student-profile/student-profile.component';
 import { StudentNotesComponent } from './student-notes/student-notes.component';
-import { NotificationItemComponent } from './shared/notification-item/notification-item.component';
+import { StudentNotificationsComponent } from './student-notifications/student-notifications.component';
 
 const routes: Routes = [
   {
@@ -30,7 +30,7 @@ const routes: Routes = [
       },
       { 
         path: 'notifications', 
-        component: NotificationItemComponent,
+        component: StudentNotificationsComponent,
         data: { title: 'Notifications', icon: 'notifications' }
       }
     ]
