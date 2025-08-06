@@ -1,0 +1,122 @@
+<div class="child-attendance">
+  <!-- Header -->
+  <div class="attendance-header">
+    <div class="header-content">
+      <h1>✅ Présences de l'enfant</h1>
+      <div class="month-navigation">
+        <button class="nav-btn" (click)="changeMonth(-1)">‹</button>
+        <h2>{{ getMonthYear() }}</h2>
+        <button class="nav-btn" (click)="changeMonth(1)" [disabled]="isCurrentMonth()">›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="stats-cards">
+    <div class="stat-card present">
+      <div class="stat-icon">✅</div>
+      <div class="stat-info">
+        <h3>{{ monthlyStats.presentDays }}</h3>
+        <p>Jours présents</p>
+      </div>
+    </div>
+    
+    <div class="stat-card absent">
+      <div class="stat-icon">❌</div>
+      <div class="stat-info">
+        <h3>{{ monthlyStats.absentDays }}</h3>
+        <p>Jours absents</p>
+      </div>
+    </div>
+    
+    <div class="stat-card late">
+      <div class="stat-icon">⏰</div>
+      <div class="stat-info">
+        <h3>{{ monthlyStats.lateDays }}</h3>
+        <p>Retards</p>
+      </div>
+    </div>
+    
+    <div class="stat-card rate">
+      <div class="stat-icon">📊</div>
+      <div class="stat-info">
+        <h3>{{ monthlyStats.attendanceRate }}%</h3>
+        <p>Taux de présence</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Records -->
+  <div class="attendance-records">
+    <div class="records-header">
+      <h2>📅 Détail des présences</h2>
+    </div>
+    
+    <div class="records-list">
+      <div class="record-item" *ngFor="let record of attendanceRecords" 
+           [class]="record.status">
+        <div class="record-date">
+          <div class="date-info">
+            <span class="date-day">{{ formatDate(record.date) }}</span>
+          </div>
+        </div>
+        
+        <div class="record-status">
+          <div class="status-badge" [style.background-color]="getStatusColor(record.status)">
+            <span class="status-icon">{{ getStatusIcon(record.status) }}</span>
+            <span class="status-label">
+              {{ record.status === 'present' ? 'Présent' : 
+                 record.status === 'absent' ? 'Absent' : 'En retard' }}
+            </span>
+          </div>
+        </div>
+        
+        <div class="record-details">
+          <div *ngIf="record.status === 'present' || record.status === 'late'" class="time-info">
+            <div *ngIf="record.arrivalTime" class="time-item">
+              <span class="time-label">Arrivée:</span>
+              <span class="time-value">{{ record.arrivalTime }}</span>
+            </div>
+            <div *ngIf="record.departureTime" class="time-item">
+              <span class="time-label">Départ:</span>
+              <span class="time-value">{{ record.departureTime }}</span>
+            </div>
+          </div>
+          
+          <div *ngIf="record.reason" class="reason-info">
+            <span class="reason-label">Motif:</span>
+            <span class="reason-text">{{ record.reason }}</span>
+          </div>
+          
+          <div *ngIf="record.justifiedAbsence" class="justified-badge">
+            ✓ Absence justifiée
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="attendanceRecords.length === 0" class="no-records">
+        <div class="no-records-icon">📅</div>
+        <p>Aucun enregistrement de présence pour ce mois</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="attendance-legend">
+    <h3>Légende</h3>
+    <div class="legend-items">
+      <div class="legend-item">
+        <span class="legend-icon" style="color: #27ae60;">✅</span>
+        <span>Présent</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-icon" style="color: #e74c3c;">❌</span>
+        <span>Absent</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-icon" style="color: #f39c12;">⏰</span>
+        <span>En retard</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,240 @@
+<div class="child-profile">
+  <div class="profile-header">
+    <div class="header-content">
+      <h1>👤 Profil de l'enfant</h1>
+      <div class="header-actions">
+        <button class="btn-secondary" *ngIf="!isEditMode" (click)="toggleEditMode()">
+          ✏️ Modifier
+        </button>
+        <div class="edit-actions" *ngIf="isEditMode">
+          <button class="btn-primary" (click)="saveProfile()">💾 Sauvegarder</button>
+          <button class="btn-secondary" (click)="cancelEdit()">❌ Annuler</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <!-- Basic Information -->
+    <div class="profile-section">
+      <h2>📋 Informations générales</h2>
+      <div class="profile-card">
+        <div class="profile-photo">
+          <div class="photo-placeholder">
+            {{ childProfile.firstName.charAt(0) }}{{ childProfile.lastName.charAt(0) }}
+          </div>
+        </div>
+        
+        <div class="profile-info">
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Prénom</label>
+              <input 
+                *ngIf="isEditMode" 
+                type="text" 
+                [(ngModel)]="childProfile.firstName" 
+                class="form-input"
+              />
+              <span *ngIf="!isEditMode">{{ childProfile.firstName }}</span>
+            </div>
+            
+            <div class="info-item">
+              <label>Nom</label>
+              <input 
+                *ngIf="isEditMode" 
+                type="text" 
+                [(ngModel)]="childProfile.lastName" 
+                class="form-input"
+              />
+              <span *ngIf="!isEditMode">{{ childProfile.lastName }}</span>
+            </div>
+            
+            <div class="info-item">
+              <label>Date de naissance</label>
+              <input 
+                *ngIf="isEditMode" 
+                type="date" 
+                [(ngModel)]="childProfile.dateOfBirth" 
+                class="form-input"
+              />
+              <span *ngIf="!isEditMode">{{ formatDate(childProfile.dateOfBirth) }}</span>
+            </div>
+            
+            <div class="info-item">
+              <label>Âge</label>
+              <span>{{ getAge() }} ans</span>
+            </div>
+            
+            <div class="info-item">
+              <label>Classe</label>
+              <input 
+                *ngIf="isEditMode" 
+                type="text" 
+                [(ngModel)]="childProfile.class" 
+                class="form-input"
+              />
+              <span *ngIf="!isEditMode">{{ childProfile.class }}</span>
+            </div>
+            
+            <div class="info-item">
+              <label>Professeur principal</label>
+              <input 
+                *ngIf="isEditMode" 
+                type="text" 
+                [(ngModel)]="childProfile.teacher" 
+                class="form-input"
+              />
+              <span *ngIf="!isEditMode">{{ childProfile.teacher }}</span>
+            </div>
+            
+            <div class="info-item">
+              <label>N° étudiant</label>
+              <span>{{ childProfile.studentId }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="profile-section">
+      <h2>📞 Informations de contact</h2>
+      <div class="profile-card">
+        <div class="info-grid">
+          <div class="info-item full-width">
+            <label>Adresse</label>
+            <textarea 
+              *ngIf="isEditMode" 
+              [(ngModel)]="childProfile.address" 
+              class="form-input"
+              rows="2"
+            ></textarea>
+            <span *ngIf="!isEditMode">{{ childProfile.address }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Téléphone</label>
+            <input 
+              *ngIf="isEditMode" 
+              type="tel" 
+              [(ngModel)]="childProfile.phone" 
+              class="form-input"
+            />
+            <span *ngIf="!isEditMode">{{ childProfile.phone }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Email</label>
+            <input 
+              *ngIf="isEditMode" 
+              type="email" 
+              [(ngModel)]="childProfile.email" 
+              class="form-input"
+            />
+            <span *ngIf="!isEditMode">{{ childProfile.email }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Contact -->
+    <div class="profile-section">
+      <h2>🚨 Contact d'urgence</h2>
+      <div class="profile-card">
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Nom</label>
+            <input 
+              *ngIf="isEditMode" 
+              type="text" 
+              [(ngModel)]="childProfile.emergencyContact.name" 
+              class="form-input"
+            />
+            <span *ngIf="!isEditMode">{{ childProfile.emergencyContact.name }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Relation</label>
+            <input 
+              *ngIf="isEditMode" 
+              type="text" 
+              [(ngModel)]="childProfile.emergencyContact.relationship" 
+              class="form-input"
+            />
+            <span *ngIf="!isEditMode">{{ childProfile.emergencyContact.relationship }}</span>
+          </div>
+          
+          <div class="info-item">
+            <label>Téléphone</label>
+            <input 
+              *ngIf="isEditMode" 
+              type="tel" 
+              [(ngModel)]="childProfile.emergencyContact.phone" 
+              class="form-input"
+            />
+            <span *ngIf="!isEditMode">{{ childProfile.emergencyContact.phone }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Medical Information -->
+    <div class="profile-section">
+      <h2>⚕️ Informations médicales</h2>
+      <div class="profile-card">
+        <div class="info-grid">
+          <div class="info-item full-width">
+            <label>Allergies</label>
+            <div *ngIf="!isEditMode" class="tag-list">
+              <span class="tag tag-warning" *ngFor="let allergy of childProfile.medicalInfo.allergies">
+                {{ allergy }}
+              </span>
+              <span *ngIf="childProfile.medicalInfo.allergies.length === 0" class="no-data">
+                Aucune allergie connue
+              </span>
+            </div>
+            <textarea 
+              *ngIf="isEditMode" 
+              [(ngModel)]="childProfile.medicalInfo.allergies" 
+              class="form-input"
+              placeholder="Séparez les allergies par des virgules"
+              rows="2"
+            ></textarea>
+          </div>
+          
+          <div class="info-item full-width">
+            <label>Médicaments</label>
+            <div *ngIf="!isEditMode" class="tag-list">
+              <span class="tag tag-info" *ngFor="let medication of childProfile.medicalInfo.medications">
+                {{ medication }}
+              </span>
+              <span *ngIf="childProfile.medicalInfo.medications.length === 0" class="no-data">
+                Aucun médicament
+              </span>
+            </div>
+            <textarea 
+              *ngIf="isEditMode" 
+              [(ngModel)]="childProfile.medicalInfo.medications" 
+              class="form-input"
+              placeholder="Séparez les médicaments par des virgules"
+              rows="2"
+            ></textarea>
+          </div>
+          
+          <div class="info-item full-width">
+            <label>Notes médicales</label>
+            <textarea 
+              *ngIf="isEditMode" 
+              [(ngModel)]="childProfile.medicalInfo.notes" 
+              class="form-input"
+              rows="3"
+            ></textarea>
+            <span *ngIf="!isEditMode" class="medical-notes">
+              {{ childProfile.medicalInfo.notes || 'Aucune note médicale' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
