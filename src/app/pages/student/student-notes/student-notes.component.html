@@ -6,7 +6,6 @@
         title="Global Average"
         [value]="average"
         suffix="/20"
-        icon="grade"
         [color]="getGradeColor(average, 20)"
         [percentage]="(average / 20) * 100">
       </app-stat-card>
@@ -16,7 +15,6 @@
   <!-- Subject Summaries -->
   <div class="subjects-section" *ngIf="subjectSummaries$ | async as summaries">
     <h3 class="section-title">
-      <mat-icon>school</mat-icon>
       Subject Overview
     </h3>
     
@@ -24,7 +22,6 @@
       <mat-card class="subject-card" *ngFor="let summary of summaries">
         <mat-card-header>
           <mat-card-title>
-            <mat-icon>{{getSubjectIcon(summary.subject)}}</mat-icon>
             <div class="subject-info">
               <span class="subject-name">{{summary.subject}}</span>
               <span class="subject-code">{{summary.subjectCode}}</span>
@@ -67,7 +64,6 @@
   <!-- Filters and Controls -->
   <div class="controls-section">
     <h3 class="section-title">
-      <mat-icon>list</mat-icon>
       Detailed Notes
     </h3>
     
@@ -95,7 +91,6 @@
       <button mat-icon-button 
               (click)="sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'"
               [matTooltip]="sortDirection === 'asc' ? 'Sort Descending' : 'Sort Ascending'">
-        <mat-icon>{{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}</mat-icon>
       </button>
     </div>
   </div>
@@ -113,9 +108,7 @@
                   class="sortable-header" 
                   (click)="onSortChange('date')">
                 Date
-                <mat-icon *ngIf="sortBy === 'date'">
-                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
-                </mat-icon>
+
               </th>
               <td mat-cell *matCellDef="let note">
                 <div class="date-cell">
@@ -131,13 +124,10 @@
                   class="sortable-header" 
                   (click)="onSortChange('subject')">
                 Subject
-                <mat-icon *ngIf="sortBy === 'subject'">
-                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
-                </mat-icon>
+
               </th>
               <td mat-cell *matCellDef="let note">
                 <div class="subject-cell">
-                  <mat-icon>{{getSubjectIcon(note.subject)}}</mat-icon>
                   <div class="subject-info">
                     <span class="subject-name">{{note.subject}}</span>
                     <span class="subject-code">{{note.subjectCode}}</span>
@@ -152,9 +142,7 @@
                   class="sortable-header" 
                   (click)="onSortChange('examType')">
                 Type
-                <mat-icon *ngIf="sortBy === 'examType'">
-                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
-                </mat-icon>
+
               </th>
               <td mat-cell *matCellDef="let note">
                 <mat-chip [color]="'primary'" selected>
@@ -170,9 +158,7 @@
                   class="sortable-header" 
                   (click)="onSortChange('grade')">
                 Grade
-                <mat-icon *ngIf="sortBy === 'grade'">
-                  {{sortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward'}}
-                </mat-icon>
+
               </th>
               <td mat-cell *matCellDef="let note">
                 <div class="grade-cell">
@@ -218,7 +204,6 @@
         
         <div class="table-footer" *ngIf="(getFilteredNotes() | async)?.length === 0">
           <div class="empty-state">
-            <mat-icon>grade</mat-icon>
             <h4>No notes found</h4>
             <p>{{selectedSubject === 'all' ? 'No grades available yet.' : 'No grades found for ' + selectedSubject + '.'}}</p>
           </div>

@@ -1,0 +1,115 @@
+<div class="dashboard">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <h1>Bonjour ! 👋</h1>
+    <p>Voici un aperçu de la scolarité de <strong>{{ childName }}</strong></p>
+  </div>
+
+  <!-- Dashboard Cards -->
+  <div class="dashboard-cards">
+    <div class="card" 
+         *ngFor="let card of dashboardCards" 
+         [style.border-left-color]="card.color"
+         (click)="navigateTo(card.route!)">
+      <div class="card-content">
+        <div class="card-icon" [style.color]="card.color">{{ card.icon }}</div>
+        <div class="card-info">
+          <h3>{{ card.value }}</h3>
+          <p>{{ card.title }}</p>
+        </div>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Weekly Attendance -->
+    <div class="widget attendance-widget">
+      <div class="widget-header">
+        <h2>📅 Présences de la semaine</h2>
+      </div>
+      <div class="widget-content">
+        <div class="attendance-days">
+          <div class="attendance-day" 
+               *ngFor="let day of weeklyAttendance"
+               [class.present]="day.present"
+               [class.absent]="!day.present">
+            <span class="day-name">{{ day.day }}</span>
+            <span class="day-status">{{ day.present ? '✅' : '❌' }}</span>
+          </div>
+        </div>
+        <div class="attendance-summary">
+          <p>Présent: 4/5 jours cette semaine</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="widget activities-widget">
+      <div class="widget-header">
+        <h2>🕒 Activités récentes</h2>
+      </div>
+      <div class="widget-content">
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let activity of recentActivities">
+            <div class="activity-icon">{{ activity.icon }}</div>
+            <div class="activity-content">
+              <p class="activity-message">{{ activity.message }}</p>
+              <span class="activity-time">{{ activity.time }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="widget events-widget">
+      <div class="widget-header">
+        <h2>📅 Événements à venir</h2>
+        <button class="view-all-btn" (click)="navigateTo('/parent/events')">Voir tout</button>
+      </div>
+      <div class="widget-content">
+        <div class="event-list">
+          <div class="event-item" *ngFor="let event of upcomingEvents">
+            <div class="event-date">
+              <span class="event-day">{{ formatDate(event.date) }}</span>
+              <span class="event-time">{{ event.time }}</span>
+            </div>
+            <div class="event-info">
+              <div class="event-icon">{{ getEventTypeIcon(event.type) }}</div>
+              <span class="event-title">{{ event.title }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="widget actions-widget">
+      <div class="widget-header">
+        <h2>⚡ Actions rapides</h2>
+      </div>
+      <div class="widget-content">
+        <div class="quick-actions">
+          <button class="action-btn" (click)="navigateTo('/parent/messages')">
+            <span class="action-icon">💬</span>
+            <span class="action-label">Envoyer un message</span>
+          </button>
+          <button class="action-btn" (click)="navigateTo('/parent/schedule')">
+            <span class="action-icon">📅</span>
+            <span class="action-label">Voir l'emploi du temps</span>
+          </button>
+          <button class="action-btn" (click)="navigateTo('/parent/child-profile')">
+            <span class="action-icon">👤</span>
+            <span class="action-label">Profil de l'enfant</span>
+          </button>
+          <button class="action-btn" (click)="navigateTo('/parent/child-notes')">
+            <span class="action-icon">📝</span>
+            <span class="action-label">Consulter les notes</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

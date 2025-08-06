@@ -1,0 +1,19 @@
+<div class="teacher-layout">
+  <app-teacher-header>
+    [sidebarCollapsed]="sidebarCollapsed"
+    (toggleSidebar)="toggleSidebar()">
+  </app-teacher-header>
+  
+  <div class="layout-body">
+    <app-teacher-sidebar>
+      [collapsed]="sidebarCollapsed"
+      (toggleCollapse)="onSidebarToggle($event)">
+    </app-teacher-sidebar>
+    
+    <main class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

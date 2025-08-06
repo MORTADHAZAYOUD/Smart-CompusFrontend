@@ -11,7 +11,6 @@
     <!-- Sidebar Header -->
     <div class="sidenav-header">
       <div class="logo-container">
-        <mat-icon class="logo-icon">school</mat-icon>
         <h2 class="logo-text">SmartCampus</h2>
       </div>
       
@@ -36,7 +35,6 @@
         [routerLink]="item.path"
         routerLinkActive="active-link"
         (click)="onNavigationClick()">
-        <mat-icon matListIcon>{{item.icon}}</mat-icon>
         <span matLine>{{item.title}}</span>
         <span *ngIf="item.badge" class="nav-badge" [matBadge]="item.badge" matBadgeColor="accent" matBadgeSize="small"></span>
       </a>
@@ -45,7 +43,6 @@
     <!-- Sidebar Footer -->
     <div class="sidenav-footer">
       <button mat-button class="logout-btn" (click)="logout()">
-        <mat-icon>logout</mat-icon>
         <span>Logout</span>
       </button>
     </div>
@@ -61,7 +58,6 @@
         mat-icon-button
         (click)="drawer.toggle()"
         *ngIf="isHandset$ | async">
-        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       
       <span class="toolbar-title">{{currentPageTitle}}</span>
@@ -69,25 +65,11 @@
       <span class="toolbar-spacer"></span>
       
       <!-- Toolbar Actions -->
-      <div class="toolbar-actions">
-        <button mat-icon-button [routerLink]="'/student/notifications'">
-          <mat-icon matBadge="2" matBadgeColor="warn" matBadgeSize="small">notifications</mat-icon>
-        </button>
-        
-        <button mat-icon-button [routerLink]="'/student/messages'">
-          <mat-icon matBadge="5" matBadgeColor="accent" matBadgeSize="small">message</mat-icon>
-        </button>
-        
-        <button mat-icon-button [matMenuTriggerFor]="userMenu">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-      </div>
     </mat-toolbar>
 
     <!-- User Menu -->
     <mat-menu #userMenu="matMenu">
       <a mat-menu-item [routerLink]="'/student/profile'">
-        <mat-icon>person</mat-icon>
         <span>My Profile</span>
       </a>
       <mat-divider></mat-divider>

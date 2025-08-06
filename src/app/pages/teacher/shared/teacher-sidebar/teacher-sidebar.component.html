@@ -1,0 +1,53 @@
+<aside class="teacher-sidebar" [class.collapsed]="collapsed">
+  <div class="sidebar-header">
+    <div class="logo" *ngIf="!collapsed">
+      <span class="logo-icon">🎓</span>
+      <span class="logo-text">Smart Campus</span>
+    </div>
+    <div class="logo-mini" *ngIf="collapsed">
+      <span class="logo-icon">🎓</span>
+    </div>
+  </div>
+  
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item" 
+          *ngFor="let item of menuItems" 
+          [class.active]="isActive(item.route)"
+          [class.has-active-child]="hasActiveChild(item)"
+          [class.expanded]="item.expanded">
+        
+        <div class="nav-link" (click)="toggleMenuItem(item)">
+          <span class="nav-icon">{{item.icon}}</span>
+          <span class="nav-label" *ngIf="!collapsed">{{item.label}}</span>
+          <span class="nav-arrow" *ngIf="!collapsed && item.children" 
+                [class.rotated]="item.expanded">▼</span>
+        </div>
+        
+        <ul class="nav-submenu" *ngIf="item.children && item.expanded && !collapsed">
+          <li class="nav-subitem" 
+              *ngFor="let child of item.children"
+              [class.active]="isActive(child.route)">
+            <div class="nav-sublink" (click)="navigateToRoute(child.route)">
+              <span class="nav-subicon">{{child.icon}}</span>
+              <span class="nav-sublabel">{{child.label}}</span>
+            </div>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+  
+  <div class="sidebar-footer">
+    <div class="collapse-btn" (click)="toggleSidebar()">
+      <span class="collapse-icon" [class.rotated]="collapsed">◀</span>
+      <span class="collapse-text" *ngIf="!collapsed">Réduire</span>
+    </div>
+  </div>
+</aside>
+
+<!-- Overlay for mobile -->
+<div class="sidebar-overlay" 
+     [class.active]="!collapsed" 
+     (click)="toggleSidebar()"
+     *ngIf="!collapsed"></div>

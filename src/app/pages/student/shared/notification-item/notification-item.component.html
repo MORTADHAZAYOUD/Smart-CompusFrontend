@@ -1,11 +1,10 @@
 <div class="notification-item" 
      [ngClass]="getNotificationClasses()"
-     (click)="onMarkAsRead()">
+     (click)="onMarkAsRead()"
+     *ngIf="notification">
   
   <div class="notification-icon">
-    <mat-icon [color]="getNotificationColor(notification.type)">
-      {{getNotificationIcon(notification.type)}}
-    </mat-icon>
+
   </div>
   
   <div class="notification-content">

@@ -6,7 +6,6 @@
               *ngIf="!isEditing" 
               color="primary" 
               (click)="toggleEdit()">
-        <mat-icon>edit</mat-icon>
         Edit Profile
       </button>
       <button mat-button 
@@ -31,7 +30,6 @@
             <p class="student-id">Student ID: {{student.studentId}}</p>
             <p class="program">{{student.program}} - Year {{student.year}}</p>
             <button mat-button color="primary" *ngIf="isEditing">
-              <mat-icon>photo_camera</mat-icon>
               Change Photo
             </button>
           </div>
@@ -43,7 +41,6 @@
     <mat-card class="personal-info-card">
       <mat-card-header>
         <mat-card-title>
-          <mat-icon>person</mat-icon>
           Personal Information
         </mat-card-title>
       </mat-card-header>
@@ -93,7 +90,6 @@
                     type="submit" 
                     [disabled]="profileForm.invalid || isLoading">
               <mat-icon *ngIf="isLoading">hourglass_empty</mat-icon>
-              <mat-icon *ngIf="!isLoading">save</mat-icon>
               {{isLoading ? 'Saving...' : 'Save Changes'}}
             </button>
           </div>
@@ -102,7 +98,6 @@
         <ng-template #viewMode>
           <div class="info-grid">
             <div class="info-item">
-              <mat-icon>person</mat-icon>
               <div class="info-content">
                 <label>Full Name</label>
                 <span>{{student.firstName}} {{student.lastName}}</span>
@@ -110,7 +105,6 @@
             </div>
 
             <div class="info-item">
-              <mat-icon>email</mat-icon>
               <div class="info-content">
                 <label>Email</label>
                 <span>{{student.email}}</span>
@@ -118,7 +112,6 @@
             </div>
 
             <div class="info-item">
-              <mat-icon>phone</mat-icon>
               <div class="info-content">
                 <label>Phone</label>
                 <span>{{student.phone}}</span>
@@ -126,7 +119,6 @@
             </div>
 
             <div class="info-item">
-              <mat-icon>cake</mat-icon>
               <div class="info-content">
                 <label>Date of Birth</label>
                 <span>{{formatDate(student.dateOfBirth)}} ({{calculateAge(student.dateOfBirth)}} years old)</span>
@@ -134,7 +126,6 @@
             </div>
 
             <div class="info-item">
-              <mat-icon>badge</mat-icon>
               <div class="info-content">
                 <label>Student ID</label>
                 <span>{{student.studentId}}</span>
@@ -142,7 +133,6 @@
             </div>
 
             <div class="info-item">
-              <mat-icon>school</mat-icon>
               <div class="info-content">
                 <label>Program</label>
                 <span>{{student.program}}</span>
@@ -150,7 +140,6 @@
             </div>
 
             <div class="info-item">
-              <mat-icon>timeline</mat-icon>
               <div class="info-content">
                 <label>Academic Year</label>
                 <span>Year {{student.year}}, Semester {{student.semester}}</span>

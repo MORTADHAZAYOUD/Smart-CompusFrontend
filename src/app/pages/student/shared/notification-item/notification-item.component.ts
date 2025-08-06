@@ -64,18 +64,24 @@ export class NotificationItemComponent {
   }
 
   onMarkAsRead(): void {
-    if (!this.notification.isRead) {
+    if (this.notification && !this.notification.isRead) {
       this.markAsRead.emit(this.notification.id);
     }
   }
 
   onActionClick(): void {
-    if (this.notification.actionUrl) {
+    if (this.notification && this.notification.actionUrl) {
       this.actionClicked.emit(this.notification.actionUrl);
     }
   }
 
   getNotificationClasses(): any {
+    if (!this.notification) {
+      return {
+        'compact': this.compact
+      };
+    }
+    
     return {
       'compact': this.compact,
       'unread': !this.notification.isRead,

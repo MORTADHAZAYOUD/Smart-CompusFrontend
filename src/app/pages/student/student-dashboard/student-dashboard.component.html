@@ -7,7 +7,6 @@
         title="Global Average"
         [value]="data.stats.globalAverage"
         suffix="/20"
-        icon="grade"
         [color]="getGradeColor(data.stats.globalAverage, 20)"
         [percentage]="(data.stats.globalAverage / 20) * 100">
       </app-stat-card>
@@ -16,7 +15,6 @@
         title="Attendance Rate"
         [value]="data.stats.attendanceRate"
         suffix="%"
-        icon="how_to_reg"
         [color]="getAttendanceColor(data.stats.attendanceRate)"
         [percentage]="data.stats.attendanceRate">
       </app-stat-card>
@@ -24,14 +22,12 @@
       <app-stat-card
         title="Total Subjects"
         [value]="data.stats.totalSubjects"
-        icon="book"
         color="info">
       </app-stat-card>
       
       <app-stat-card
         title="Upcoming Exams"
         [value]="data.stats.upcomingExams"
-        icon="quiz"
         color="warning">
       </app-stat-card>
     </div>
@@ -44,7 +40,6 @@
       <mat-card class="chart-card">
         <mat-card-header>
           <mat-card-title>
-            <mat-icon>trending_up      </mat-icon>
             Performance by Subject
           </mat-card-title>
         </mat-card-header>
@@ -68,7 +63,6 @@
       <mat-card class="chart-card">
         <mat-card-header>
           <mat-card-title>
-            <mat-icon>pie_chart</mat-icon>
             Attendance Distribution
           </mat-card-title>
         </mat-card-header>
@@ -91,7 +85,6 @@
     <mat-card class="content-card">
       <mat-card-header>
         <mat-card-title>
-          <mat-icon>grade</mat-icon>
           Recent Notes
         </mat-card-title>
         <div class="spacer"></div>
@@ -114,7 +107,6 @@
         </div>
         <ng-template #noNotes>
           <div class="empty-state">
-            <mat-icon>grade</mat-icon>
             <p>No recent notes available</p>
           </div>
         </ng-template>
@@ -125,7 +117,6 @@
     <mat-card class="content-card">
       <mat-card-header>
         <mat-card-title>
-          <mat-icon>schedule</mat-icon>
           Upcoming Sessions
         </mat-card-title>
         <div class="spacer"></div>
@@ -140,7 +131,6 @@
         </div>
         <ng-template #noSessions>
           <div class="empty-state">
-            <mat-icon>schedule</mat-icon>
             <p>No upcoming sessions</p>
           </div>
         </ng-template>
@@ -151,7 +141,6 @@
     <mat-card class="content-card">
       <mat-card-header>
         <mat-card-title>
-          <mat-icon>event</mat-icon>
           Upcoming Events
         </mat-card-title>
         <div class="spacer"></div>
@@ -167,7 +156,6 @@
         </div>
         <ng-template #noEvents>
           <div class="empty-state">
-            <mat-icon>event</mat-icon>
             <p>No upcoming events</p>
           </div>
         </ng-template>
@@ -178,7 +166,6 @@
     <mat-card class="content-card">
       <mat-card-header>
         <mat-card-title>
-          <mat-icon>notifications</mat-icon>
           Recent Notifications
         </mat-card-title>
         <div class="spacer"></div>
@@ -194,7 +181,6 @@
         </div>
         <ng-template #noNotifications>
           <div class="empty-state">
-            <mat-icon>notifications</mat-icon>
             <p>No recent notifications</p>
           </div>
         </ng-template>

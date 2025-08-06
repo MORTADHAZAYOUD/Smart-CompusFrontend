@@ -22,6 +22,14 @@ export const routes: Routes = [
         loadChildren: () => import('./pages/student/student.module').then(m => m.StudentModule)
 
 
+    },
+    {
+        path: 'teacher',
+        loadChildren: () => import('./pages/teacher/teacher.module').then(m => m.TeacherModule)
+    },
+    {
+        path: 'parent',
+        loadChildren: () => import('./pages/parent/parent.module').then(m => m.ParentModule)
     }
 
 ];
