@@ -22,10 +22,31 @@ export class LoginComponent {
       next: (res) => {
         console.log('✅ Connexion réussie', res);
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/dashboard']);
+        // Navigate based on user type
+        if (res.user?.type) {
+          switch (res.user.type) {
+            case 'admin':
+              this.router.navigate(['/admin']);
+              break;
+            case 'teacher':
+              this.router.navigate(['/teacher']);
+              break;
+            case 'parent':
+              this.router.navigate(['/parent']);
+              break;
+            case 'student':
+            default:
+              this.router.navigate(['/student']);
+              break;
+          }
+        } else {
+          this.router.navigate(['/home']);
+        }
       },
       error: (err) => {
         console.error('❌ Erreur de connexion', err);
+        // Show error message to user
+        alert('Erreur de connexion: ' + (err.error?.error || 'Erreur inconnue'));
       }
     });
   }
